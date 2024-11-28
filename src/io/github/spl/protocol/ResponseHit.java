@@ -38,6 +38,8 @@ public  class  ResponseHit  implements Command {
 				return "S:" + name + ".";
 			}
 		}
+		
+		return null;
 	}
 
 

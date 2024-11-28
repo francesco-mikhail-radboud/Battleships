@@ -12,15 +12,15 @@ public  class  RequestHit  implements Command {
 
 	
 	
-	public RequestHit(int x, int y){
-		coordiante = new Coordinate(x, y);
+	public RequestHit(int x, int y) {
+		this.coordinate = new Coordinate(x, y);
 	}
 
 	
 
 	@Override
-	public String serilize(){
-		return "C:" + coordiante.getX() + ";" + coordinate.getY() + ".";
+	public String serialize() {
+		return "C:" + coordinate.getX() + ";" + coordinate.getY() + ".";
 	}
 
 

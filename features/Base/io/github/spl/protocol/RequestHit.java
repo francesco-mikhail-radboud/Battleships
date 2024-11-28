@@ -5,16 +5,16 @@ import io.github.spl.ships.Coordinate;
 /**
  * TODO description
  */
-public class RequestHit implements Command{
+public class RequestHit implements Command {
 	
 	private final Coordinate coordinate;
 	
-	public RequestHit(int x, int y){
-		coordiante = new Coordinate(x, y);
+	public RequestHit(int x, int y) {
+		this.coordinate = new Coordinate(x, y);
 	}
 
 	@Override
-	public String serilize(){
-		return "C:" + coordiante.getX() + ";" + coordinate.getY() + ".";
+	public String serialize() {
+		return "C:" + coordinate.getX() + ";" + coordinate.getY() + ".";
 	}
 }

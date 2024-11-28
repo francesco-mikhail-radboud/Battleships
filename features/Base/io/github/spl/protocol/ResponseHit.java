@@ -3,7 +3,7 @@ package io.github.spl.protocol;
 /**
  * TODO description
  */
-public class ResponseHit implements Command{
+public class ResponseHit implements Command {
 	
 	public static enum ResponseHitOption {
 		HIT, MISS, SINK
@@ -30,5 +30,7 @@ public class ResponseHit implements Command{
 				return "S:" + name + ".";
 			}
 		}
+		
+		return null;
 	}
 }

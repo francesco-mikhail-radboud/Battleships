@@ -3,6 +3,7 @@ package io.github.spl.player;
 import java.awt.image.BufferedImage; 
 import java.io.BufferedReader; 
 import java.io.BufferedWriter; 
+import java.io.IOException; 
 import java.io.InputStream; 
 import java.io.InputStreamReader; 
 import java.io.OutputStream; 
@@ -46,16 +47,16 @@ public  class  Player {
 
 	
 	
-	public void hit(Player other) {
-		int x = 0;
-		int y = 0;
-		outputWriter.write(new RequestHit(x, y));
+	public void hit(Player other, Coordinate coordinate) throws IOException {
+		int x = coordinate.getX();
+		int y = coordinate.getY();
+		outputWriter.write((new RequestHit(x, y)).toString());
 		outputWriter.flush();
 	}
 
 	
 	
-	public Command read() {
+	public Command read() throws IOException {
 		Command command = ProtocolParser.parse(inputReader.readLine());
 		return command;
 	}

@@ -20,14 +20,32 @@ public  class  Game {
 
 	
 	
-    public Game(GameType gameType, GameMode gameMode, GameView gameView) {
-    	
+    public Game(GameType gameType, GameView gameView) {
+
     }
 
 	
     
     public void play() {
     	
+    }
+
+	
+    
+    private void performHit() {
+    	
+    }
+
+	
+
+    public void setPlayer1(Player player1) {
+        this.player1 = player1;
+    }
+
+	
+
+    public void setPlayer2(Player player2) {
+        this.player1 = player2;
     }
 
 

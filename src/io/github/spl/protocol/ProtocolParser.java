@@ -40,6 +40,8 @@ public  class  ProtocolParser {
 		} else {
 			throw new UnknownCommandException(command);
 		}
+		
+		return null;
 	}
 
 
