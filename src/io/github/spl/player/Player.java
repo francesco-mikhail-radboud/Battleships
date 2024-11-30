@@ -61,5 +61,13 @@ public  class  Player {
 		return command;
 	}
 
+	public GameGrid getGameGrid() {
+		return gameGrid;
+	}
+
+	public List<Ship> getShips() {
+		return ships;
+	}
+
 
 }

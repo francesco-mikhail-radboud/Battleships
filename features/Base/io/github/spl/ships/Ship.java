@@ -31,6 +31,14 @@ public class Ship {
 		
 		this.name = template.getName();
 	}
-	
+
+	public List<ShipCoordinate> getShipCoordinates() {
+		return coordinates;
+	}
+
+	public String getName() {
+		return name;
+	}
+	 
 	
 }
