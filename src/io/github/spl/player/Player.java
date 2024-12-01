@@ -32,5 +32,8 @@ public  interface  Player {
 	
 	String getName();
 
+	
+	ResponseSetup setup();
+
 
 }

@@ -44,6 +44,12 @@ public  class  ProtocolParser {
                 return new ResponseGameLost(false);
 			} else if (command.equals("L:?.")) {
 				return new RequestGameLost();
+			} else if (command.equals("SETUP:?.")) {
+				return new RequestSetup();
+			} else if (command.equals("SETUP:Y.")) {
+				return new ResponseSetup(true);
+			} else if (command.equals("SETUP:N.")) {
+				return new ResponseSetup(false);
 			}
 		} else {
 			throw new UnknownCommandException(command);

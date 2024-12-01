@@ -1,31 +1,26 @@
 package io.github.spl.game;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PipedOutputStream;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import java.util.List;
 
-import io.github.spl.game.*;
-import io.github.spl.game.actions.*;
-import io.github.spl.player.*;
-import io.github.spl.ships.*;
+import io.github.spl.game.actions.*; 
+import io.github.spl.player.*; 
+import io.github.spl.ships.*; 
 import io.github.spl.protocol.*;
+import java.util.ArrayList;
 
 /**
  * TODO description
  */
 public class CLIGameView extends GameView {
 	
-	private final static Scanner scanner;
+	private final Scanner scanner;
 	
 	public CLIGameView() {
 		super();
 
-		CLIGameView.scanner = new Scanner(System.in);
+		this.scanner = new Scanner(System.in);
 	}
 
 	protected void processRequestCoordinates(RequestCoordinates action) {
@@ -96,9 +91,22 @@ public class CLIGameView extends GameView {
 			HumanPlayer humanPlayer = (HumanPlayer) action.getPlayer1();
 			CLIDisplay.displayYourGrid(humanPlayer.getShips(), humanPlayer.getGameGrid().getDimension());
 			CLIDisplay.displayGridHits(humanPlayer.getGameGrid().getListOfCoordsHit(), humanPlayer.getGameGrid().getDimension());	
-		}
+		} 
 	}
 
+	protected void processSetup(Setup action) {
+		if (action.getPlayer() instanceof HumanPlayer) {
+			HumanPlayer humanPlayer = (HumanPlayer) action.getPlayer();
+			setupFleetFromUserInput(humanPlayer, game.getGameType().getTemplates());
+
+			humanPlayer.getCommandQueue().add(new ResponseSetup(true));
+		} else if (action.getPlayer() instanceof AIPlayer) {
+			AIPlayer aiPlayer = (AIPlayer) action.getPlayer();
+			setupRandomFleet(aiPlayer, game.getGameType().getTemplates());
+			
+			aiPlayer.getCommandQueue().add(new ResponseSetup(true));
+		}
+	}
 
 	public boolean checkListHits(int x, int y, GameGrid gameGrid) {
 		for (ShipCoordinate coord : gameGrid.getListOfCoordsHit()) {
@@ -109,9 +117,9 @@ public class CLIGameView extends GameView {
 		return true;
 	}
 
-	public static void setupFleetFromUserInput(HumanPlayer player, List<ShipTemplate> shipTemplates) {
+	public void setupFleetFromUserInput(HumanPlayer player, List<ShipTemplate> shipTemplates) {
 		GameGrid gameGrid = player.getGameGrid();
-		List<Ship> ships = new ArrayList<>();
+		List<Ship> ships = new ArrayList<Ship>();
 	
 		System.out.println("Welcome to Battleships! Time to place your fleet.");
 		for (ShipTemplate template : shipTemplates) {

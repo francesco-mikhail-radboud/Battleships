@@ -69,11 +69,11 @@ public abstract   class  GameView {
     public void run() {
         HumanPlayer player1 = new HumanPlayer("Human", new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
         //humanPlayer.addShip(game.getGameType().getTemplates().get(0), new Coordinate(1, 1), 0);
-        setupRandomFleet(player1, game.getGameType().getTemplates());
+        //setupRandomFleet(player1, game.getGameType().getTemplates());
 
         AIPlayer player2 = new AIPlayer("AI", new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
         // aiPlayer.addShip(game.getGameType().getTemplates().get(0), new Coordinate(2, 2), 0);
-        setupRandomFleet(player2, game.getGameType().getTemplates());
+        // setupRandomFleet(player2, game.getGameType().getTemplates());
 		
         game.setPlayer1(player1);
         game.setPlayer2(player2);
@@ -98,6 +98,8 @@ public abstract   class  GameView {
 			processGameWin((GameWin) action);
 		} else if (action instanceof GameTick) {
 			processGameTick((GameTick) action);
+		} else if (action instanceof Setup) {
+			processSetup((Setup) action);
 		}
 	}
 
@@ -128,6 +130,10 @@ public abstract   class  GameView {
 	
 
 	protected void processGameTick(GameTick action) {}
+
+	
+
+	protected void processSetup(Setup action) {}
 
 	
 	
@@ -179,7 +185,7 @@ public abstract   class  GameView {
 
 	
 
-    private static boolean canPlaceShip(Ship ship, List<Ship> existingShips, GameGrid grid) {
+    public static boolean canPlaceShip(Ship ship, List<Ship> existingShips, GameGrid grid) {
         for (ShipCoordinate coord : ship.getShipCoordinates()) {
             if (coord.getX() < 0 || coord.getX() >= grid.getDimension().getWidth() ||
                 coord.getY() < 0 || coord.getY() >= grid.getDimension().getHeight()) {

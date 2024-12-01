@@ -55,6 +55,8 @@ public abstract class GameView {
 			processGameWin((GameWin) action);
 		} else if (action instanceof GameTick) {
 			processGameTick((GameTick) action);
+		} else if (action instanceof Setup) {
+			processSetup((Setup) action);
 		}
 	}
 
@@ -71,6 +73,8 @@ public abstract class GameView {
 	protected void processGameWin(GameWin action) {}
 
 	protected void processGameTick(GameTick action) {}
+
+	protected void processSetup(Setup action) {}
 	
 	public void addGameAction(GameAction action) {
 		gameActions.add(action);

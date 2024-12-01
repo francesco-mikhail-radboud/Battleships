@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.ArrayList;
 
 import io.github.spl.game.GameGrid;
+import io.github.spl.game.GameView;
 import io.github.spl.ships.Coordinate;
 import io.github.spl.ships.Ship;
 import io.github.spl.ships.ShipTemplate;
+import io.github.spl.protocol.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import io.github.spl.protocol.ResponseHit.ResponseHitOption;
+import io.github.spl.game.actions.*;
 
-public abstract class LocalPlayer {
+public abstract class LocalPlayer implements Player {
 
     protected String name;
 
@@ -16,10 +21,16 @@ public abstract class LocalPlayer {
 
     protected GameGrid gameGrid;
 
-    public LocalPlayer(String name, List<Ship> ships, GameGrid gameGrid) {
+    protected ConcurrentLinkedQueue<Command> commandQueue;
+    
+    protected GameView gameView;
+
+    public LocalPlayer(String name, List<Ship> ships, GameGrid gameGrid, GameView gameView) {
         this.name = name;
         this.ships = new ArrayList<Ship>(ships);;
         this.gameGrid = gameGrid;
+        this.commandQueue = new ConcurrentLinkedQueue<Command>();
+        this.gameView = gameView;
     }
 
     public boolean addShip(ShipTemplate shipTemplate, Coordinate coordinate, int timesRotated) {
@@ -34,5 +45,54 @@ public abstract class LocalPlayer {
 
     public GameGrid getGameGrid() {
         return gameGrid;
+    }
+
+    public ResponseHit hit(Coordinate coordinate) {
+        for (Ship ship : ships) {
+            if (ship.hit(coordinate)) {
+                if (ship.isSunk()) {
+                    return new ResponseHit(ResponseHitOption.SINK, ship.getName());
+                } else {
+                    return new ResponseHit(ResponseHitOption.HIT, ship.getName());
+                }
+            }
+        }
+
+        return new ResponseHit(ResponseHitOption.MISS, null);
+    }
+
+    public ResponseGameLost isGameLost() {
+        for (Ship ship : ships) {
+            if (!ship.isSunk()) {
+                return new ResponseGameLost(false);
+            }
+        }
+
+        return new ResponseGameLost(true);
+    }
+
+	public ResponseCoordinate selectCoordinate() {
+		return null;
+	}
+
+	public String getName() {
+        return name;
+    }
+
+    public ResponseSetup setup() {
+        gameView.addGameAction(new Setup(this));
+
+        Command command = null;
+		while (!(command instanceof ResponseSetup)) {
+			if (!commandQueue.isEmpty()) {
+				command = commandQueue.poll();
+			}
+		}
+
+        return (ResponseSetup) command;
+    }
+
+    public ConcurrentLinkedQueue<Command> getCommandQueue() {
+    	return commandQueue;
     }
 }

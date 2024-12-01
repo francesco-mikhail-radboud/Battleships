@@ -10,6 +10,14 @@ import io.github.spl.game.actions.*;
  */
 public class Game {
     public void play() {
+
+        ResponseSetup player1Response = player1.setup();
+        ResponseSetup player2Response = player2.setup();
+        
+        if (!(player1Response.isSuccess() && player2Response.isSuccess())) {
+        	return;
+        }
+
         while (true) {
             
         	gameView.addGameAction(new GameTick(player1, player2));

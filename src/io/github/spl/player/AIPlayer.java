@@ -15,48 +15,16 @@ import io.github.spl.protocol.ResponseHit.ResponseHitOption;
 import io.github.spl.ships.Coordinate; 
 import io.github.spl.ships.*; 
 
-public  class  AIPlayer  extends LocalPlayer  implements Player {
-	
-
-    private GameView gameView;
-
+public  class  AIPlayer  extends LocalPlayer {
 	
 
     public AIPlayer(String name, List<Ship> ships, GameGrid gameGrid, GameView gameView) {
-        super(name, ships, gameGrid);
-		this.gameView = gameView;
+        super(name, ships, gameGrid, gameView);
 	}
 
 	
-    
-    public ResponseHit hit(Coordinate coordinate) {
-        for (Ship ship : ships) {
-            if (ship.hit(coordinate)) {
-                if (ship.isSunk()) {
-                    return new ResponseHit(ResponseHitOption.SINK, ship.getName());
-                } else {
-                    return new ResponseHit(ResponseHitOption.HIT, ship.getName());
-                }
-            }
-        }
 
-        return new ResponseHit(ResponseHitOption.MISS, null);
-    }
-
-	
-
-    public ResponseGameLost isGameLost() {
-        for (Ship ship : ships) {
-            if (!ship.isSunk()) {
-                return new ResponseGameLost(false);
-            }
-        }
-
-        return new ResponseGameLost(true);
-    }
-
-	
-
+    @Override
     public ResponseCoordinate selectCoordinate() {
         Coordinate xy;
 		do {
@@ -90,12 +58,6 @@ public  class  AIPlayer  extends LocalPlayer  implements Player {
 		}
 		return true;
 	}
-
-	
-    
-    public String getName() {
-    	return name;
-    }
 
 
 }

@@ -1,19 +1,14 @@
 package io.github.spl.game; 
 
-import java.io.BufferedWriter; 
-import java.io.IOException; 
-import java.io.OutputStreamWriter; 
-import java.io.PipedOutputStream; 
 import java.util.Scanner; 
-import java.util.concurrent.ConcurrentLinkedQueue; 
 
 import java.util.List; 
 
-import io.github.spl.game.*; 
-import io.github.spl.game.actions.*; 
-import io.github.spl.player.*; 
-import io.github.spl.ships.*; 
+import io.github.spl.game.actions.*;  
+import io.github.spl.player.*;  
+import io.github.spl.ships.*;  
 import io.github.spl.protocol.*; 
+import java.util.ArrayList; 
 
 /**
  * TODO description
@@ -21,7 +16,7 @@ import io.github.spl.protocol.*;
 public  class  CLIGameView  extends GameView {
 	
 	
-	private Scanner scanner;
+	private final Scanner scanner;
 
 	
 	
@@ -36,10 +31,6 @@ public  class  CLIGameView  extends GameView {
 	protected void processRequestCoordinates(RequestCoordinates action) {
 
 		HumanPlayer humanPlayer = ((HumanPlayer) action.getPlayer());
-
-		//TODO: grafical grid
-		//CLIDisplay.displayGridWithHitsCLI(humanPlayer.getShips(), humanPlayer.getGameGrid().getListOfCoordsHit(), 
-		//									humanPlayer.getGameGrid().getDimension(), true);
 
 		System.out.print("Select the coordinate to hit (row column):");
 		int x = scanner.nextInt();
@@ -117,11 +108,26 @@ public  class  CLIGameView  extends GameView {
 			HumanPlayer humanPlayer = (HumanPlayer) action.getPlayer1();
 			CLIDisplay.displayYourGrid(humanPlayer.getShips(), humanPlayer.getGameGrid().getDimension());
 			CLIDisplay.displayGridHits(humanPlayer.getGameGrid().getListOfCoordsHit(), humanPlayer.getGameGrid().getDimension());	
-		}
+		} 
 	}
 
 	
 
+	protected void processSetup(Setup action) {
+		if (action.getPlayer() instanceof HumanPlayer) {
+			HumanPlayer humanPlayer = (HumanPlayer) action.getPlayer();
+			setupRandomFleet(humanPlayer, game.getGameType().getTemplates());
+
+			humanPlayer.getCommandQueue().add(new ResponseSetup(true));
+		} else if (action.getPlayer() instanceof AIPlayer) {
+			AIPlayer aiPlayer = (AIPlayer) action.getPlayer();
+			setupRandomFleet(aiPlayer, game.getGameType().getTemplates());
+			
+			aiPlayer.getCommandQueue().add(new ResponseSetup(true));
+		}
+	}
+
+	
 
 	public boolean checkListHits(int x, int y, GameGrid gameGrid) {
 		for (ShipCoordinate coord : gameGrid.getListOfCoordsHit()) {
@@ -130,6 +136,42 @@ public  class  CLIGameView  extends GameView {
 			}
 		}
 		return true;
+	}
+
+	
+
+	public void setupFleetFromUserInput(HumanPlayer player, List<ShipTemplate> shipTemplates) {
+		GameGrid gameGrid = player.getGameGrid();
+		List<Ship> ships = new ArrayList<Ship>();
+	
+		System.out.println("Welcome to Battleships! Time to place your fleet.");
+		for (ShipTemplate template : shipTemplates) {
+			boolean placed = false;
+	
+			while (!placed) {
+				System.out.println("Placing ship: " + template.getName() + " (Length: " + template.getCoordinates().size() + ")");
+				System.out.print("Enter starting coordinate (row column): ");
+				int row = scanner.nextInt();
+				int col = scanner.nextInt();
+	
+				System.out.print("Enter rotation (0=Horizontal, 1=Vertical, 2=180°, 3=270°): ");
+				int rotation = scanner.nextInt();
+	
+				Coordinate startingCoordinate = new Coordinate(row, col);
+				Ship ship = new Ship(template, startingCoordinate, rotation);
+	
+				if (GameView.canPlaceShip(ship, ships, gameGrid)) {
+					ships.add(ship);
+					player.addShip(template, startingCoordinate, rotation);
+					placed = true;
+					CLIDisplay.displayYourGrid(player.getShips(), player.getGameGrid().getDimension());
+					System.out.println("Ship placed successfully!\n");
+				} else {
+					System.out.println("Invalid placement. The ship is either out of bounds or overlaps with another ship. Please try again.");
+				}
+			}
+		}
+		System.out.println("Fleet placement complete!");
 	}
 
 

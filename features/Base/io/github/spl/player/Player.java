@@ -24,4 +24,5 @@ public interface Player {
     ResponseGameLost isGameLost();
 	ResponseCoordinate selectCoordinate();
 	String getName();
+	ResponseSetup setup();
 }
