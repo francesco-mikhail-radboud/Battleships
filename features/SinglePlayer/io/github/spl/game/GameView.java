@@ -17,7 +17,8 @@ public abstract class GameView {
     public void run() {
         HumanPlayer player1 = new HumanPlayer("Human", new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
         //humanPlayer.addShip(game.getGameType().getTemplates().get(0), new Coordinate(1, 1), 0);
-        setupRandomFleet(player1, game.getGameType().getTemplates());
+        //setupRandomFleet(player1, game.getGameType().getTemplates());
+        setupFleetFromUserInput(player1, game.getGameType().getTemplates());
 
         AIPlayer player2 = new AIPlayer("AI", new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
         // aiPlayer.addShip(game.getGameType().getTemplates().get(0), new Coordinate(2, 2), 0);

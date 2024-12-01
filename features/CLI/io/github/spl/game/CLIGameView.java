@@ -20,21 +20,17 @@ import io.github.spl.protocol.*;
  */
 public class CLIGameView extends GameView {
 	
-	private Scanner scanner;
+	private final static Scanner scanner;
 	
 	public CLIGameView() {
 		super();
 
-		this.scanner = new Scanner(System.in);
+		CLIGameView.scanner = new Scanner(System.in);
 	}
 
 	protected void processRequestCoordinates(RequestCoordinates action) {
 
 		HumanPlayer humanPlayer = ((HumanPlayer) action.getPlayer());
-
-		//TODO: grafical grid
-		//CLIDisplay.displayGridWithHitsCLI(humanPlayer.getShips(), humanPlayer.getGameGrid().getListOfCoordsHit(), 
-		//									humanPlayer.getGameGrid().getDimension(), true);
 
 		System.out.print("Select the coordinate to hit (row column):");
 		int x = scanner.nextInt();
@@ -113,7 +109,39 @@ public class CLIGameView extends GameView {
 		return true;
 	}
 
-
+	public static void setupFleetFromUserInput(HumanPlayer player, List<ShipTemplate> shipTemplates) {
+		GameGrid gameGrid = player.getGameGrid();
+		List<Ship> ships = new ArrayList<>();
+	
+		System.out.println("Welcome to Battleships! Time to place your fleet.");
+		for (ShipTemplate template : shipTemplates) {
+			boolean placed = false;
+	
+			while (!placed) {
+				System.out.println("Placing ship: " + template.getName() + " (Length: " + template.getCoordinates().size() + ")");
+				System.out.print("Enter starting coordinate (row column): ");
+				int row = scanner.nextInt();
+				int col = scanner.nextInt();
+	
+				System.out.print("Enter rotation (0=Horizontal, 1=Vertical, 2=180°, 3=270°): ");
+				int rotation = scanner.nextInt();
+	
+				Coordinate startingCoordinate = new Coordinate(row, col);
+				Ship ship = new Ship(template, startingCoordinate, rotation);
+	
+				if (GameView.canPlaceShip(ship, ships, gameGrid)) {
+					ships.add(ship);
+					player.addShip(template, startingCoordinate, rotation);
+					placed = true;
+					CLIDisplay.displayYourGrid(player.getShips(), player.getGameGrid().getDimension());
+					System.out.println("Ship placed successfully!\n");
+				} else {
+					System.out.println("Invalid placement. The ship is either out of bounds or overlaps with another ship. Please try again.");
+				}
+			}
+		}
+		System.out.println("Fleet placement complete!");
+	}
 	
 
 }
