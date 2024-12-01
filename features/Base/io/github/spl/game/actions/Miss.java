@@ -9,15 +9,15 @@ import io.github.spl.ships.*;
 public class Miss implements GameAction {
     private Player attacker;
     private Player defender;
-    private ShipCoordinate missCoordinate;
+    private Coordinate missCoordinate;
 
-    public Miss(Player attacker, Player defender, ShipCoordinate missCoordinate) {
+    public Miss(Player attacker, Player defender, Coordinate missCoordinate) {
         this.attacker = attacker;
         this.defender = defender;
         this.missCoordinate = missCoordinate;
     }
 
-     public Player getAttacker() {
+    public Player getAttacker() {
         return attacker;
     }
     
@@ -25,7 +25,7 @@ public class Miss implements GameAction {
         return defender;
     }
 
-    public ShipCoordinate getMissCoordinate() {
+    public Coordinate getMissCoordinate() {
         return missCoordinate;
     }
 }

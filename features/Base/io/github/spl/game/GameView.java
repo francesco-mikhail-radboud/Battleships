@@ -1,5 +1,8 @@
 package io.github.spl.game;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import io.github.spl.game.actions.*;
@@ -9,11 +12,13 @@ import io.github.spl.game.actions.*;
  */
 public abstract class GameView {
 	
-	private ConcurrentLinkedQueue<GameAction> gameActions;
-	private Game game;
+	protected ConcurrentLinkedQueue<GameAction> gameActions;
+	protected Game game;
+	protected BufferedOutputStream outputStream;
 
 	public GameView() {
-		gameActions = new ConcurrentLinkedQueue<GameAction>();
+		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
+		this.outputStream = new BufferedOutputStream(new ByteArrayOutputStream());
 	}
 
 	public void run() {
@@ -48,30 +53,34 @@ public abstract class GameView {
 			processSinkage((Sinkage) action);
 		} else if (action instanceof GameWin) {
 			processGameWin((GameWin) action);
+		} else if (action instanceof GameTick) {
+			processGameTick((GameTick) action);
 		}
 	}
 
-	private void processRequestCoordinates(RequestCoordinates action) {
+	protected void processRequestCoordinates(RequestCoordinates action) {}
+	
+	protected void processHit(Hit action) {}
 
+	protected void processDamage(Damage action) {}
+
+	protected void processMiss(Miss action) {}
+
+	protected void processSinkage(Sinkage action) {}
+
+	protected void processGameWin(GameWin action) {}
+
+	protected void processGameTick(GameTick action) {}
+	
+	public void addGameAction(GameAction action) {
+		gameActions.add(action);
 	}
 	
-	private void processHit(Hit action) {
-		
+	public ConcurrentLinkedQueue<GameAction> getGameActions() {
+		return gameActions;
 	}
 
-	private void processDamage(Damage action) {
-		
-	}
-
-	private void processMiss(Miss action) {
-		
-	}
-
-	private void processSinkage(Sinkage action) {
-		
-	}
-
-	private void processGameWin(GameWin action) {
-		
+	public BufferedOutputStream getOutputStream() {
+		return outputStream;
 	}
 }

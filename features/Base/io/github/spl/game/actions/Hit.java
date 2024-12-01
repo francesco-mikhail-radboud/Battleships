@@ -7,22 +7,16 @@ import io.github.spl.ships.Coordinate;
  * TODO description
  */
 public class Hit implements GameAction {
-    private Player attacker;
-    private Player defender;
+    private Player player;
     private Coordinate attackedCoordinate;
 
-    public Hit(Player attacker, Player defender, Coordinate attackedCoordinate) {
-        this.attacker = attacker;
-        this.defender = defender;
+    public Hit(Player player, Coordinate attackedCoordinate) {
+        this.player = player;
         this.attackedCoordinate = attackedCoordinate;
     }
 
-    public Player getAttacker() {
-        return attacker;
-    }
-    
-    public Player getDefender() {
-        return defender;
+    public Player getPlayer() {
+        return player;
     }
 
     public Coordinate getCoordinate() {

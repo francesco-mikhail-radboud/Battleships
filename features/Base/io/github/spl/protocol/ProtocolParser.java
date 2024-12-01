@@ -15,7 +15,7 @@ public class ProtocolParser {
 				try {
 					int x = Integer.parseInt(command.substring(2, semicolPos));
 					int y = Integer.parseInt(command.substring(semicolPos + 1, dotPos));
-					return new RequestHit(x, y);
+					return new ResponseCoordinate(x, y);
 				} catch (Exception exception) {
 					throw new UnknownCommandException(command);
 				}
@@ -33,8 +33,16 @@ public class ProtocolParser {
 				} catch (Exception e) {
 					throw new UnknownCommandException(command);
 				}
+			} else if (command.equals("C:?.")) {
+				return new RequestCoordinate();
 			} else if (command.equals("M.")) {
 				return new ResponseHit(ResponseHitOption.MISS, "");
+			} else if (command.equals("L:Y.")) {
+                return new ResponseGameLost(true);
+			} else if (command.equals("L:N.")) {
+                return new ResponseGameLost(false);
+			} else if (command.equals("L:?.")) {
+				return new RequestGameLost();
 			}
 		} else {
 			throw new UnknownCommandException(command);

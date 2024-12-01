@@ -9,29 +9,30 @@ import io.github.spl.player.*;
 public class Damage implements GameAction {
     private Player attacker;
     private Player defender;
-    private Ship ship;
-    private ShipCoordinate hitCoordinate;
+    
+    private String shipName;
+    private Coordinate hitCoordinate;
 
-    public Damage(Player attacker, Player defender, Ship ship, ShipCoordinate hitCoordinate) {
+    public Damage(Player attacker, Player defender, String shipName, Coordinate hitCoordinate) {
         this.attacker = attacker;
         this.defender = defender;
-        this.ship = ship;
+        this.shipName = shipName;
         this.hitCoordinate = hitCoordinate;
     }
 
     public Player getAttacker() {
-        return attacker;
+    	return attacker;
     }
-
+    
     public Player getDefender() {
-        return defender;
+    	return defender;
     }
 
-    public Ship getShip() {
-        return ship;
+    public String getShipName() {
+        return shipName;
     }
 
-    public ShipCoordinate getHitCoordinate() {
+    public Coordinate getHitCoordinate() {
         return hitCoordinate;
     }
 }

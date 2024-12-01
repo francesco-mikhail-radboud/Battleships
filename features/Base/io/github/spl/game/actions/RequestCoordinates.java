@@ -4,19 +4,13 @@ import io.github.spl.game.*;
 import io.github.spl.player.*;
 
 public class RequestCoordinates implements GameAction {
-    private Player attacker;
-    private Player defender;
+    private Player player;
 
-    public RequestCoordinates(Player attacker, Player defender) {
-        this.attacker = attacker;
-        this.defender = defender;
+    public RequestCoordinates(Player player) {
+        this.player = player;
     }
     
-    public Player getAttacker() {
-        return attacker;
-    }
-
-    public Player getDefender() {
-        return defender;
+    public Player getPlayer() {
+        return player;
     }
 }

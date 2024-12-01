@@ -14,6 +14,10 @@ public class Ship {
 	
 	private String name;
 	
+	private ShipTemplate template;
+
+	private boolean isSunk;
+	
 	public Ship(ShipTemplate template, Coordinate onGrid, int timesRotated) {
 		this.coordinates = new ArrayList<ShipCoordinate>();
 		
@@ -30,6 +34,21 @@ public class Ship {
 		}
 		
 		this.name = template.getName();
+
+		this.isSunk = false;
+		
+		this.template = template;
+	}
+
+	public boolean hit(Coordinate coordinate) {
+		for (ShipCoordinate c : coordinates) {
+			if (c.getX() == coordinate.getX() && c.getY() == coordinate.getY()) {
+				c.setIsHit(true);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public List<ShipCoordinate> getShipCoordinates() {
@@ -40,5 +59,21 @@ public class Ship {
 		return name;
 	}
 	 
+	public boolean isSunk() {
+		if (!isSunk) {
+			for (ShipCoordinate c : coordinates) {
+				if (!c.getIsHit()) {
+					return false;
+				}
+			}
+			isSunk = true;
+			return isSunk;
+		} else {
+			return isSunk;
+		}
+	}
 	
+	public ShipTemplate getShipTemplate() {
+		return template;
+	}
 }

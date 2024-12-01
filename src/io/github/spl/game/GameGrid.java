@@ -33,5 +33,11 @@ public  class  GameGrid {
 		return listOfCoordsHit;
 	}
 
+	
+	
+	public void add(ShipCoordinate coordinate) {
+		listOfCoordsHit.add(coordinate);
+	}
+
 
 }

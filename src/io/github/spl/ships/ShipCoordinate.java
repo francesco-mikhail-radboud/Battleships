@@ -23,6 +23,12 @@ public  class  ShipCoordinate {
 
 	
 	
+	public ShipCoordinate(Coordinate c) {
+		this(c.getX(), c.getY());
+	}
+
+	
+	
 	public int getX(){
 		return x;
 	}
@@ -43,6 +49,30 @@ public  class  ShipCoordinate {
 	
 	public void setIsHit(boolean isHit){
 		this.isHit = isHit;
+	}
+
+	
+
+	@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ShipCoordinate coordinate = (ShipCoordinate) o;
+        return x == coordinate.x && y == coordinate.y;
+    }
+
+	
+
+	@Override
+    public int hashCode() {
+        return 31 * x + y;
+    }
+
+	
+
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ")";
 	}
 
 

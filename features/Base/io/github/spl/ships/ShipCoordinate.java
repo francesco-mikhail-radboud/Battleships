@@ -14,6 +14,10 @@ public class ShipCoordinate {
 		this.isHit = false;
 	}
 	
+	public ShipCoordinate(Coordinate c) {
+		this(c.getX(), c.getY());
+	}
+	
 	public int getX(){
 		return x;
 	}
@@ -42,5 +46,10 @@ public class ShipCoordinate {
     public int hashCode() {
         return 31 * x + y;
     }
+
+	@Override
+	public String toString() {
+		return "(" + x + ", " + y + ")";
+	}
 	
 }

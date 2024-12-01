@@ -33,4 +33,12 @@ public class ResponseHit implements Command {
 		
 		return null;
 	}
+
+	public ResponseHitOption getHitOption() {
+		return option;
+	}
+
+	public String getShipName() {
+		return name;
+	}
 }

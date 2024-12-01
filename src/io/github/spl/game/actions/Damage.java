@@ -14,41 +14,42 @@ public  class  Damage  implements GameAction {
     private Player defender;
 
 	
-    private Ship ship;
+    
+    private String shipName;
 
 	
-    private ShipCoordinate hitCoordinate;
+    private Coordinate hitCoordinate;
 
 	
 
-    public Damage(Player attacker, Player defender, Ship ship, ShipCoordinate hitCoordinate) {
+    public Damage(Player attacker, Player defender, String shipName, Coordinate hitCoordinate) {
         this.attacker = attacker;
         this.defender = defender;
-        this.ship = ship;
+        this.shipName = shipName;
         this.hitCoordinate = hitCoordinate;
     }
 
 	
 
     public Player getAttacker() {
-        return attacker;
+    	return attacker;
     }
 
 	
-
+    
     public Player getDefender() {
-        return defender;
+    	return defender;
     }
 
 	
 
-    public Ship getShip() {
-        return ship;
+    public String getShipName() {
+        return shipName;
     }
 
 	
 
-    public ShipCoordinate getHitCoordinate() {
+    public Coordinate getHitCoordinate() {
         return hitCoordinate;
     }
 

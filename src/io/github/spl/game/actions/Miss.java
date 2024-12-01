@@ -14,11 +14,11 @@ public  class  Miss  implements GameAction {
     private Player defender;
 
 	
-    private ShipCoordinate missCoordinate;
+    private Coordinate missCoordinate;
 
 	
 
-    public Miss(Player attacker, Player defender, ShipCoordinate missCoordinate) {
+    public Miss(Player attacker, Player defender, Coordinate missCoordinate) {
         this.attacker = attacker;
         this.defender = defender;
         this.missCoordinate = missCoordinate;
@@ -26,7 +26,7 @@ public  class  Miss  implements GameAction {
 
 	
 
-     public Player getAttacker() {
+    public Player getAttacker() {
         return attacker;
     }
 
@@ -38,7 +38,7 @@ public  class  Miss  implements GameAction {
 
 	
 
-    public ShipCoordinate getMissCoordinate() {
+    public Coordinate getMissCoordinate() {
         return missCoordinate;
     }
 

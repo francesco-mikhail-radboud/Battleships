@@ -23,4 +23,8 @@ public class GameGrid {
 	public List<ShipCoordinate> getListOfCoordsHit(){
 		return listOfCoordsHit;
 	}
+	
+	public void add(ShipCoordinate coordinate) {
+		listOfCoordsHit.add(coordinate);
+	}
 }

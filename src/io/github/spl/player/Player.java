@@ -12,62 +12,25 @@ import java.util.List;
 
 import io.github.spl.game.GameGrid; 
 import io.github.spl.game.GameView; 
-import io.github.spl.protocol.Command; 
-import io.github.spl.protocol.ProtocolParser; 
-import io.github.spl.protocol.RequestHit; 
+import io.github.spl.protocol.*; 
 import io.github.spl.ships.*; 
 
 /**
  * TODO description
  */
-public  class  Player {
+
+public  interface  Player {
 	
-	private GameGrid gameGrid;
+	ResponseHit hit(Coordinate coordinate);
 
 	
-	private List<Ship> ships;
+    ResponseGameLost isGameLost();
 
 	
-	private GameView gameView;
+	ResponseCoordinate selectCoordinate();
 
 	
-	
-	private BufferedReader inputReader;
-
-	
-	private BufferedWriter outputWriter;
-
-	
-	
-	public Player(GameGrid gameGrid, List<Ship> ships, GameView gameView) {
-		this.gameGrid = gameGrid;
-		this.ships = new ArrayList<Ship>(ships);
-		this.gameView = gameView;
-	}
-
-	
-	
-	public void hit(Player other, Coordinate coordinate) throws IOException {
-		int x = coordinate.getX();
-		int y = coordinate.getY();
-		outputWriter.write((new RequestHit(x, y)).toString());
-		outputWriter.flush();
-	}
-
-	
-	
-	public Command read() throws IOException {
-		Command command = ProtocolParser.parse(inputReader.readLine());
-		return command;
-	}
-
-	public GameGrid getGameGrid() {
-		return gameGrid;
-	}
-
-	public List<Ship> getShips() {
-		return ships;
-	}
+	String getName();
 
 
 }

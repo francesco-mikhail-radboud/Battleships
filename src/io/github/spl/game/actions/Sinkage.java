@@ -1,8 +1,7 @@
 package io.github.spl.game.actions; 
 
-import io.github.spl.player.Player; 
-import io.github.spl.ships.Ship; 
-import io.github.spl.ships.ShipCoordinate; 
+import io.github.spl.player.*; 
+import io.github.spl.ships.*; 
 
 /**
  * TODO description
@@ -15,14 +14,18 @@ public  class  Sinkage  implements GameAction {
     private Player defender;
 
 	
-    private Ship ship;
+    private Coordinate lastCoordinateHit;
+
+	
+    private String shipName;
 
 	
     
-    public Sinkage(Player attacker, Player defender, Ship ship) {
+    public Sinkage(Player attacker, Player defender, Coordinate lastCoordinateHit, String shipName) {
     	this.attacker = attacker;
     	this.defender = defender;
-    	this.ship = ship;
+    	this.lastCoordinateHit = lastCoordinateHit;
+    	this.shipName = shipName;
     }
 
 	
@@ -34,13 +37,19 @@ public  class  Sinkage  implements GameAction {
 	
     
     public Player getDefender() {
-    	return defender;
-    }
+		return defender;
+	}
 
 	
     
-    public Ship getShip() {
-    	return ship;
+    public Coordinate getLastCoordinateHit() {
+		return lastCoordinateHit;
+	}
+
+	
+    
+    public String getShipName() {
+    	return shipName;
     }
 
 
