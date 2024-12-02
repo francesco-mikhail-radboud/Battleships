@@ -8,4 +8,13 @@ public class RequestCoordinate implements Command {
 	public String serialize() {
 		return "C:?.";
 	}
+    
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        return other instanceof RequestCoordinate;
+    }
 }

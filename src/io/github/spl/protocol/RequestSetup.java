@@ -7,5 +7,16 @@ public  class  RequestSetup  implements Command {
 		return "SETUP:?.";
 	}
 
+	
+    
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        return other instanceof RequestSetup;
+    }
+
 
 }

@@ -21,4 +21,17 @@ public class ResponseCoordinate implements Command {
 	public Coordinate getCoordinate() {
 		return coordinate;
 	}
+	
+	@Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        
+        if (!(other instanceof ResponseCoordinate)) {
+        	return false;
+        }
+
+        return this.coordinate.equals(((ResponseCoordinate) other).coordinate);
+    }
 }

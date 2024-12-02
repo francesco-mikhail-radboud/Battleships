@@ -15,4 +15,17 @@ public class ResponseSetup implements Command {
 	public String serialize() {
 		return "SETUP:" + (isSuccess ? "Y" : "N") + ".";
 	}
+    
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        
+        if (!(other instanceof ResponseSetup)) {
+        	return false;
+        }
+
+        return this.isSuccess == ((ResponseSetup) other).isSuccess;
+    }
 }

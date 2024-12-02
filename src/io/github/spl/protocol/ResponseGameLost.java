@@ -24,5 +24,20 @@ public  class  ResponseGameLost  implements Command {
 		return isLost;
 	}
 
+	
+	
+	@Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        
+        if (!(other instanceof ResponseGameLost)) {
+        	return false;
+        }
+
+        return this.isLost == ((ResponseGameLost) other).isLost;
+    }
+
 
 }

@@ -116,7 +116,7 @@ public  class  CLIGameView  extends GameView {
 	protected void processSetup(Setup action) {
 		if (action.getPlayer() instanceof HumanPlayer) {
 			HumanPlayer humanPlayer = (HumanPlayer) action.getPlayer();
-			setupRandomFleet(humanPlayer, game.getGameType().getTemplates());
+			setupFleetFromUserInput(humanPlayer, game.getGameType().getTemplates());
 
 			humanPlayer.getCommandQueue().add(new ResponseSetup(true));
 		} else if (action.getPlayer() instanceof AIPlayer) {

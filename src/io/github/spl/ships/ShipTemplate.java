@@ -31,5 +31,42 @@ public  class  ShipTemplate {
 		return coordinateList;
 	}
 
+	
+	
+	@Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        
+        if (!(other instanceof ShipTemplate)) {
+        	return false;
+        }
+        
+        ShipTemplate otherShipTemplate = (ShipTemplate) other;
+        
+        if (this.name == null) {
+        	if (otherShipTemplate.name != null) {
+        		return false;
+        	}
+        } 
+        
+        if (!this.name.equals(otherShipTemplate.name)) {
+        	return false;
+        }
+        
+        if (this.coordinateList.size() != otherShipTemplate.coordinateList.size()) {
+			return false;
+		}
+		
+		for (Coordinate c : coordinateList) {
+			if (!otherShipTemplate.coordinateList.contains(c)) {
+				return false;
+			}
+		}
+        
+        return true;
+    }
+
 
 }

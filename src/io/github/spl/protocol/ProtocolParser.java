@@ -10,7 +10,23 @@ public  class  ProtocolParser {
 	
 	public static Command parse(String command) {
 		if (command.length() > 0) {
-			if (command.charAt(0) == 'C') {
+			if (command.equals("C:?.")) {
+				return new RequestCoordinate();
+			} else if (command.equals("M.")) {
+				return new ResponseHit(ResponseHitOption.MISS, null);
+			} else if (command.equals("L:Y.")) {
+                return new ResponseGameLost(true);
+			} else if (command.equals("L:N.")) {
+                return new ResponseGameLost(false);
+			} else if (command.equals("L:?.")) {
+				return new RequestGameLost();
+			} else if (command.equals("SETUP:?.")) {
+				return new RequestSetup();
+			} else if (command.equals("SETUP:Y.")) {
+				return new ResponseSetup(true);
+			} else if (command.equals("SETUP:N.")) {
+				return new ResponseSetup(false);
+			} else if (command.charAt(0) == 'C') {
 				int semicolPos = command.indexOf(';');
 				int dotPos = command.length() - 1;
 				try {
@@ -34,23 +50,7 @@ public  class  ProtocolParser {
 				} catch (Exception e) {
 					throw new UnknownCommandException(command);
 				}
-			} else if (command.equals("C:?.")) {
-				return new RequestCoordinate();
-			} else if (command.equals("M.")) {
-				return new ResponseHit(ResponseHitOption.MISS, "");
-			} else if (command.equals("L:Y.")) {
-                return new ResponseGameLost(true);
-			} else if (command.equals("L:N.")) {
-                return new ResponseGameLost(false);
-			} else if (command.equals("L:?.")) {
-				return new RequestGameLost();
-			} else if (command.equals("SETUP:?.")) {
-				return new RequestSetup();
-			} else if (command.equals("SETUP:Y.")) {
-				return new ResponseSetup(true);
-			} else if (command.equals("SETUP:N.")) {
-				return new ResponseSetup(false);
-			}
+			} 
 		} else {
 			throw new UnknownCommandException(command);
 		}

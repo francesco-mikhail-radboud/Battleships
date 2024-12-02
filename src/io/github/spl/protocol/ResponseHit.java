@@ -54,5 +54,30 @@ public  class  ResponseHit  implements Command {
 		return name;
 	}
 
+	
+	
+	@Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        
+        if (!(other instanceof ResponseHit)) {
+        	return false;
+        }
+        
+        ResponseHit otherResponseHit = (ResponseHit) other;
+        
+        if (this.name == null) {
+        	if (otherResponseHit.name == null) {
+        		return this.option.equals(otherResponseHit.option);
+        	} else {
+        		return false;
+        	}
+        }
+        
+        return this.name.equals(otherResponseHit.name) && this.option.equals(otherResponseHit.option);
+    }
+
 
 }

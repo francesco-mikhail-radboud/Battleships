@@ -32,13 +32,9 @@ public abstract   class  GameView {
 	protected Game game;
 
 	
-	protected BufferedOutputStream outputStream;
-
-	
 
 	public GameView  () {
 		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
-		this.outputStream = new BufferedOutputStream(new ByteArrayOutputStream());
 	
 		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
 		this.game = new Game(createBasicGameType(), this);
@@ -145,12 +141,6 @@ public abstract   class  GameView {
 	
 	public ConcurrentLinkedQueue<GameAction> getGameActions() {
 		return gameActions;
-	}
-
-	
-
-	public BufferedOutputStream getOutputStream() {
-		return outputStream;
 	}
 
 	

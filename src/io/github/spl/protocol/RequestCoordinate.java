@@ -10,5 +10,16 @@ public  class  RequestCoordinate  implements Command {
 		return "C:?.";
 	}
 
+	
+    
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        return other instanceof RequestCoordinate;
+    }
+
 
 }
