@@ -3,6 +3,8 @@ package io.github.spl.protocol;
 import io.github.spl.exceptions.UnknownCommandException;
 import io.github.spl.protocol.ResponseHit.ResponseHitOption;
 
+import java.util.ArrayList;
+
 /**
  * TODO description
  */
@@ -25,15 +27,30 @@ public class ProtocolParser {
 				return new ResponseSetup(true);
 			} else if (command.equals("SETUP:N.")) {
 				return new ResponseSetup(false);
-			} else if (command.charAt(0) == 'C') {
-				int semicolPos = command.indexOf(';');
-				int dotPos = command.length() - 1;
-				try {
-					int x = Integer.parseInt(command.substring(2, semicolPos));
-					int y = Integer.parseInt(command.substring(semicolPos + 1, dotPos));
-					return new ResponseCoordinate(x, y);
-				} catch (Exception exception) {
-					throw new UnknownCommandException(command);
+			} else if (command.startsWith("C:") && command.endsWith(".")) {
+				String data = command.substring(2, command.length() - 1);
+				String[] parts = data.split(";");
+
+				if (parts.length == 2) { // ResponseCoordinate
+					try {
+						int x = Integer.parseInt(parts[0]);
+						int y = Integer.parseInt(parts[1]);
+						return new ResponseCoordinate(x, y);
+					} catch (NumberFormatException e) {
+						throw new UnknownCommandException(command);
+					}
+				} else if (parts.length % 2 == 0) { // ResponseCoordinateList
+					try {
+						List<Coordinate> coordinates = new ArrayList<Coordinate>();
+						for (int i = 0; i < parts.length; i += 2) {
+							int x = Integer.parseInt(parts[i]);
+							int y = Integer.parseInt(parts[i + 1]);
+							coordinates.add(new Coordinate(x, y));
+						}
+						return new ResponseCoordinateList(coordinates);
+					} catch (NumberFormatException e) {
+						throw new UnknownCommandException(command);
+					}
 				}
 			} else if (command.charAt(0) == 'S') {
 				try {
