@@ -25,8 +25,8 @@ public abstract class GameView {
 		shipTemplates.add(ship1);
 
 		//GameType standartType = new GameType(new Dimension(10, 10), shipTemplates);
-		GameType standartType = new GameType(new Dimension(10, 10), createBasicFleet());
-		return standartType;
+		GameType standardType = new GameType(new Dimension(10, 10), createBasicFleet());
+		return standardType;
 	}
 
 	public GameView() {

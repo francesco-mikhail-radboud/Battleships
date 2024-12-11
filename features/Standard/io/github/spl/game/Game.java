@@ -33,13 +33,13 @@ public class Game {
             ResponseHit responseHit = player2.hit(responseCoordinate.getCoordinate());
 
             switch (responseHit.getHitOption()) {
-                case ResponseHitOption.HIT:
+                case HIT:
                 	gameView.addGameAction(new Damage(player1, player2, responseHit.getShipName(), responseCoordinate.getCoordinate()));
                     break;
-                case ResponseHitOption.MISS:
+                case MISS:
                 	gameView.addGameAction(new Miss(player1, player2, responseCoordinate.getCoordinate()));
                     break;
-                case ResponseHitOption.SINK:
+                case SINK:
                 	gameView.addGameAction(new Sinkage(player1, player2, responseCoordinate.getCoordinate(), responseHit.getShipName()));
                     break;
             }
