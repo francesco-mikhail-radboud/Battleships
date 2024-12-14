@@ -55,9 +55,12 @@ public class CLIGameView extends GameView {
 
 	protected void processDamage(Damage action) {
 		if (action.getAttacker() instanceof LocalPlayer) {
-			ShipCoordinate coordinate = new ShipCoordinate(action.getHitCoordinate());
+			ShipCoordinate coordinate = new ShipCoordinate(action.getHitCoordinate(), action.getShipName());
 			coordinate.setIsHit(true);
 			((LocalPlayer) action.getAttacker()).getGameGrid().add(coordinate);
+		}
+		if (action.getAttacker() instanceof AIPlayer) {
+			((AIPlayer) action.getAttacker()).addAdjacentCoordinates(action.getHitCoordinate(), action.getShipName());
 		}
 		System.out.println("Player " + action.getDefender().getName() + 
 			" is attacked by " + action.getAttacker().getName() + " , Result: ship \"" + action.getShipName() + "\" is damaged in the coordinate: " + action.getHitCoordinate().toString());
@@ -74,9 +77,12 @@ public class CLIGameView extends GameView {
 
 	protected void processSinkage(Sinkage action) {
 		if (action.getAttacker() instanceof LocalPlayer) {
-			ShipCoordinate coordinate = new ShipCoordinate(action.getLastCoordinateHit());
+			ShipCoordinate coordinate = new ShipCoordinate(action.getLastCoordinateHit(), action.getShipName());
 			coordinate.setIsHit(true);
 			((LocalPlayer) action.getAttacker()).getGameGrid().add(coordinate);
+		}
+		if (action.getAttacker() instanceof AIPlayer) {
+			((AIPlayer) action.getAttacker()).updateRemainingOpponentShips(action);
 		}
 		System.out.println("Player " + action.getDefender().getName() + 
 				" is attacked by " + action.getAttacker().getName() + ", Result: ship \"" + action.getShipName() + "\" sank.");
@@ -104,6 +110,7 @@ public class CLIGameView extends GameView {
 		} else if (action.getPlayer() instanceof AIPlayer) {
 			AIPlayer aiPlayer = (AIPlayer) action.getPlayer();
 			setupRandomFleet(aiPlayer, game.getGameType().getTemplates());
+			aiPlayer.initializeRemainingOpponentShips(game.getGameType().getTemplates());
 			
 			aiPlayer.getCommandQueue().add(new ResponseSetup(game.getStep(), true)); 
 		}
