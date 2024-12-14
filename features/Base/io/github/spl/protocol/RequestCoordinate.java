@@ -2,11 +2,15 @@ package io.github.spl.protocol;
 
 import io.github.spl.ships.Coordinate;
 
-public class RequestCoordinate implements Command {
+public class RequestCoordinate extends Command {
 
+	public RequestCoordinate(int id) {
+		super(id);
+	}
+	
     @Override
 	public String serialize() {
-		return "C:?.";
+		return super.serialize() + "C:?.";
 	}
     
     @Override
@@ -15,6 +19,7 @@ public class RequestCoordinate implements Command {
             return true;
         }
 
-        return other instanceof RequestCoordinate;
+        return other instanceof RequestCoordinate && 
+        		super.equals(other);
     }
 }

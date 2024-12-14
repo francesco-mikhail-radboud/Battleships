@@ -3,7 +3,7 @@ import io.github.spl.game.*;
 
 public class App {
     public static void main(String[] args) {
-        GameView view = new CLIGameView();
+        GameView view = new CLIGameView(args);
         view.run(); 
     }
 }

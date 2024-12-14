@@ -3,13 +3,13 @@
 	<feature automatic="selected" name="Battleships"/>
 	<feature automatic="selected" manual="selected" name="Base"/>
 	<feature automatic="selected" name="UI"/>
-	<feature manual="selected" name="CLI"/>
-	<feature name="ColoredInterface"/>
-	<feature automatic="unselected" name="GUI"/>
-	<feature automatic="unselected" name="Pictures"/>
+	<feature automatic="unselected" name="CLI"/>
+	<feature automatic="unselected" name="ColoredInterface"/>
+	<feature manual="selected" name="GUI"/>
+	<feature name="Pictures"/>
 	<feature automatic="selected" name="GameMode"/>
 	<feature manual="selected" name="SinglePlayer"/>
-	<feature automatic="unselected" name="Multiplayer"/>
+	<feature name="Multiplayer"/>
 	<feature automatic="selected" name="GameType"/>
 	<feature manual="selected" name="Standard"/>
 	<feature automatic="unselected" name="Salvo"/>

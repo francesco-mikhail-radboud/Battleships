@@ -29,8 +29,7 @@ public abstract class GameView {
         return standartType;
     }
 
-    public GameView() {
-        this.gameActions = new ConcurrentLinkedQueue<GameAction>();
+    public GameView(String[] args) {
         this.game = new Game(createBasicGameType(), this);
     }
 
@@ -60,7 +59,7 @@ public abstract class GameView {
         shipTemplates.add(new ShipTemplate("Carrier", coordinates));
 
         return shipTemplates;
-    }
+    } 
 
     private static List<Coordinate> createCoordinates(int length) {
         List<Coordinate> coordinates = new ArrayList<Coordinate>();

@@ -1,12 +1,13 @@
 package io.github.spl.protocol; 
 
-public  class  ResponseSetup  implements Command {
+public  class  ResponseSetup  extends Command {
 	
     private final boolean isSuccess;
 
 	
 
-    public ResponseSetup(boolean isSuccess) {
+    public ResponseSetup(int id, boolean isSuccess) {
+    	super(id);
         this.isSuccess = isSuccess;
     }
 
@@ -20,7 +21,7 @@ public  class  ResponseSetup  implements Command {
 
     @Override
 	public String serialize() {
-		return "SETUP:" + (isSuccess ? "Y" : "N") + ".";
+		return super.serialize() + "SETUP:" + (isSuccess ? "Y" : "N") + ".";
 	}
 
 	
@@ -35,7 +36,8 @@ public  class  ResponseSetup  implements Command {
         	return false;
         }
 
-        return this.isSuccess == ((ResponseSetup) other).isSuccess;
+        return this.isSuccess == ((ResponseSetup) other).isSuccess 
+        		&& super.equals(other);
     }
 
 

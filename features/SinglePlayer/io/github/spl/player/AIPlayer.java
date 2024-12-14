@@ -28,7 +28,7 @@ public class AIPlayer extends LocalPlayer {
 			xy = coordToHit();
 		} while (!checkListHits(xy.getX(), xy.getY(), gameGrid));
 
-        return new ResponseCoordinate(xy.getX(), xy.getY());
+        return new ResponseCoordinate(gameView.getGame().getStep(), xy.getX(), xy.getY());
     }
 
     public Coordinate coordToHit() {

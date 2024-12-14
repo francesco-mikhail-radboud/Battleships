@@ -1,10 +1,17 @@
 package io.github.spl.protocol; 
 
-public  class  RequestGameLost  implements Command {
+public  class  RequestGameLost  extends Command {
+	
+	
+	public RequestGameLost(int id) {
+		super(id);
+	}
+
+	
 	
     @Override
 	public String serialize() {
-		return "L:?.";
+		return super.serialize() + "L:?.";
 	}
 
 	
@@ -15,7 +22,8 @@ public  class  RequestGameLost  implements Command {
             return true;
         }
 
-        return other instanceof RequestGameLost;
+        return other instanceof RequestGameLost && 
+        		super.equals(other);
     }
 
 

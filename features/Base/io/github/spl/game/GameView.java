@@ -3,9 +3,17 @@ package io.github.spl.game;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import io.github.spl.game.actions.*;
+import io.github.spl.player.LocalPlayer;
+import io.github.spl.ships.Coordinate;
+import io.github.spl.ships.Ship;
+import io.github.spl.ships.ShipCoordinate;
+import io.github.spl.ships.ShipTemplate;
 
 /**
  * TODO description
@@ -15,7 +23,7 @@ public abstract class GameView {
 	protected ConcurrentLinkedQueue<GameAction> gameActions;
 	protected Game game;
 
-	public GameView() {
+	public GameView(String[] args) {
 		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
 	}
 
@@ -29,7 +37,7 @@ public abstract class GameView {
 		thread.start();
 
 		GameAction action = null;
-		while (!(action instanceof GameWin)) {
+		while (!(action instanceof GameWin || action instanceof ConnectivityError)) {
 			if (!gameActions.isEmpty()) {
 				action = gameActions.poll();
 				processGameAction(action);
@@ -55,6 +63,8 @@ public abstract class GameView {
 			processGameTick((GameTick) action);
 		} else if (action instanceof Setup) {
 			processSetup((Setup) action);
+		} else if (action instanceof ConnectivityError) {
+			processConnectivityError((ConnectivityError) action);
 		}
 	}
 
@@ -74,6 +84,8 @@ public abstract class GameView {
 
 	protected void processSetup(Setup action) {}
 	
+	protected void processConnectivityError(ConnectivityError action) {}
+	
 	public void addGameAction(GameAction action) {
 		gameActions.add(action);
 	}
@@ -81,4 +93,51 @@ public abstract class GameView {
 	public ConcurrentLinkedQueue<GameAction> getGameActions() {
 		return gameActions;
 	}
+	
+    private static final Random random = new Random();
+
+    public static void setupRandomFleet(LocalPlayer player, List<ShipTemplate> shipTemplates) {
+    	GameGrid gameGrid = player.getGameGrid();
+        List<Ship> ships = new ArrayList<Ship>();
+
+        for (ShipTemplate template : shipTemplates) {
+            boolean placed = false;
+
+            while (!placed) {
+                int x = random.nextInt(gameGrid.getDimension().getWidth());
+                int y = random.nextInt(gameGrid.getDimension().getHeight());
+                Coordinate startingCoordinate = new Coordinate(x, y);
+                int timesRotated = random.nextInt(4); // rotation
+
+                Ship ship = new Ship(template, startingCoordinate, timesRotated);
+
+                if (canPlaceShip(ship, ships, gameGrid)) {
+                    ships.add(ship);
+                    player.addShip(template, startingCoordinate, timesRotated);
+                    placed = true;
+                }
+            }
+        }
+    }
+
+    public static boolean canPlaceShip(Ship ship, List<Ship> existingShips, GameGrid grid) {
+        for (ShipCoordinate coord : ship.getShipCoordinates()) {
+            if (coord.getX() < 0 || coord.getX() >= grid.getDimension().getWidth() ||
+                coord.getY() < 0 || coord.getY() >= grid.getDimension().getHeight()) {
+                return false;
+            }
+
+            // Check for overlap with existing ships
+            for (Ship existingShip : existingShips) {
+                if (existingShip.getShipCoordinates().contains(coord)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    public Game getGame() {
+    	return game;
+    }
 }

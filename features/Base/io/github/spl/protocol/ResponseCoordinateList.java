@@ -7,12 +7,12 @@ import java.util.List;
 /**
  * TODO description
  */
-public class ResponseCoordinateList implements Command {
+public class ResponseCoordinateList extends Command {
 
     private final List<Coordinate> coordinateList;
 
-    public ResponseCoordinateList(List<Coordinate> coordinateList) {
-
+    public ResponseCoordinateList(int id, List<Coordinate> coordinateList) {
+    	super(id);
         this.coordinateList = coordinateList;
     }
 
@@ -27,7 +27,7 @@ public class ResponseCoordinateList implements Command {
         }
         coordResponseList.setLength(coordResponseList.length() - 1);
         coordResponseList.append(".");
-        return coordResponseList.toString();
+        return super.serialize() + coordResponseList.toString();
     }
 
     public List<Coordinate> getCoordinateList() {
@@ -56,6 +56,6 @@ public class ResponseCoordinateList implements Command {
             }
         }
 
-        return true;
+        return super.equals(other);
     }
 }

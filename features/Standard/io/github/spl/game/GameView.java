@@ -24,13 +24,12 @@ public abstract class GameView {
 		List<ShipTemplate> shipTemplates = new ArrayList<ShipTemplate>();
 		shipTemplates.add(ship1);
 
-		//GameType standartType = new GameType(new Dimension(10, 10), shipTemplates);
+		//GameType standardType = new GameType(new Dimension(10, 10), shipTemplates);
 		GameType standardType = new GameType(new Dimension(10, 10), createBasicFleet());
 		return standardType;
 	}
 
-	public GameView() {
-		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
+	public GameView(String[] args) {
 		this.game = new Game(createBasicGameType(), this);
 	}
 

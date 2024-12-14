@@ -3,22 +3,25 @@ package io.github.spl.game;
 import java.io.BufferedOutputStream; 
 import java.io.ByteArrayOutputStream; 
 import java.io.OutputStream; 
-import java.util.concurrent.ConcurrentLinkedQueue; 
-
-import io.github.spl.game.actions.*; 
 
 import java.util.ArrayList; 
 import java.util.List; 
+import java.util.Random; 
+import java.util.concurrent.ConcurrentLinkedQueue; 
+
+import io.github.spl.game.actions.*; 
+import io.github.spl.player.LocalPlayer; 
+import io.github.spl.ships.Coordinate; 
+import io.github.spl.ships.Ship; 
+import io.github.spl.ships.ShipCoordinate; 
+import io.github.spl.ships.ShipTemplate; 
 
 import io.github.spl.game.actions.GameAction; 
 import io.github.spl.ships.*; 
 import io.github.spl.player.*; 
 import io.github.spl.game.*; 
-import java.util.Random; 
 import io.github.spl.player.AIPlayer; 
 import io.github.spl.player.HumanPlayer; 
-import io.github.spl.ships.Coordinate; 
-import io.github.spl.ships.ShipTemplate; 
 
 /**
  * TODO description
@@ -33,10 +36,9 @@ public abstract   class  GameView {
 
 	
 
-	public GameView  () {
+	public GameView  (String[] args) {
 		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
 	
-		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
 		this.game = new Game(createBasicGameType(), this);
 	}
 
@@ -52,7 +54,7 @@ public abstract   class  GameView {
 		thread.start();
 
 		GameAction action = null;
-		while (!(action instanceof GameWin)) {
+		while (!(action instanceof GameWin || action instanceof ConnectivityError)) {
 			if (!gameActions.isEmpty()) {
 				action = gameActions.poll();
 				processGameAction(action);
@@ -96,6 +98,8 @@ public abstract   class  GameView {
 			processGameTick((GameTick) action);
 		} else if (action instanceof Setup) {
 			processSetup((Setup) action);
+		} else if (action instanceof ConnectivityError) {
+			processConnectivityError((ConnectivityError) action);
 		}
 	}
 
@@ -133,6 +137,10 @@ public abstract   class  GameView {
 
 	
 	
+	protected void processConnectivityError(ConnectivityError action) {}
+
+	
+	
 	public void addGameAction(GameAction action) {
 		gameActions.add(action);
 	}
@@ -144,7 +152,7 @@ public abstract   class  GameView {
 	}
 
 	
-
+	
     private static final Random random = new Random();
 
 	
@@ -193,6 +201,12 @@ public abstract   class  GameView {
     }
 
 	
+    
+    public Game getGame() {
+    	return game;
+    }
+
+	
  
 	public static GameType createBasicGameType() {
 		List<Coordinate> coordinateList = new ArrayList<Coordinate>();
@@ -203,9 +217,9 @@ public abstract   class  GameView {
 		List<ShipTemplate> shipTemplates = new ArrayList<ShipTemplate>();
 		shipTemplates.add(ship1);
 
-		//GameType standartType = new GameType(new Dimension(10, 10), shipTemplates);
-		GameType standartType = new GameType(new Dimension(10, 10), createBasicFleet());
-		return standartType;
+		//GameType standardType = new GameType(new Dimension(10, 10), shipTemplates);
+		GameType standardType = new GameType(new Dimension(10, 10), createBasicFleet());
+		return standardType;
 	}
 
 	

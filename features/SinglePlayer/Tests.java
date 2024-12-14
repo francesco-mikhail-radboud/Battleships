@@ -1,24 +1,28 @@
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
+import io.github.spl.ships.Ship;
+import io.github.spl.game.*;
+import io.github.spl.player.*;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 public class Tests {
     @Test
     public void testCoordToHitGeneratesValidCoordinates() {
         GameGrid mockGrid = new GameGrid(new Dimension(10, 10));
-        AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<>(), mockGrid, null);
+        AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<Ship>(), mockGrid, null);
 
         Coordinate coordinate = mockAIPlayer.coordToHit();
-        assertTrue( coordinate.getX() >= 0 && coordinate.getX() < mockGrid.getDimension().getWidth()
-        );
+        assertTrue( coordinate.getX() >= 0 && coordinate.getX() < mockGrid.getDimension().getWidth());
         assertTrue(coordinate.getY() >= 0 && coordinate.getY() < mockGrid.getDimension().getHeight());
     }
 
     @Test
     public void testGetRandomHitWithinBounds() {
-        AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<>(), null, null);
+        AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<Ship>(), null, null);
 
         for (int i = 0; i < 100; i++) {
             int randomValue = mockAIPlayer.getRandomHit(10);
@@ -32,7 +36,7 @@ public class Tests {
         ShipCoordinate hitCoordinate = new ShipCoordinate(3, 5);
         mockGrid.getListOfCoordsHit().add(hitCoordinate);
 
-        AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<>(), mockGrid, null);
+        AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<Ship>(), mockGrid, null);
 
         assertFalse(mockAIPlayer.checkListHits(3, 5, mockGrid));
     }
@@ -43,7 +47,7 @@ public class Tests {
         ShipCoordinate hitCoordinate = new ShipCoordinate(3, 5);
         mockGrid.getListOfCoordsHit().add(hitCoordinate);
 
-        AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<>(), mockGrid, null);
+        AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<Ship>(), mockGrid, null);
 
         assertTrue(mockAIPlayer.checkListHits(4, 4, mockGrid));
     }
@@ -51,7 +55,7 @@ public class Tests {
     @Test
     public void testCanPlaceShipWithinBounds() {
         GameGrid grid = new GameGrid(new Dimension(10, 10));
-        List<Ship> existingShips = new ArrayList<>();
+        List<Ship> existingShips = new ArrayList<Ship>();
 
         Ship ship = new Ship(
                 new ShipTemplate("TestShip", Arrays.asList(new Coordinate(2, 2), new Coordinate(2, 3))),
@@ -64,7 +68,7 @@ public class Tests {
     @Test
     public void testCanPlaceShipOutOfBounds() {
         GameGrid grid = new GameGrid(new Dimension(10, 10));
-        List<Ship> existingShips = new ArrayList<>();
+        List<Ship> existingShips = new ArrayList<Ship>();
 
         Ship ship = new Ship(
                 new ShipTemplate("TestShip", Arrays.asList(new Coordinate(9, 9), new Coordinate(9, 10))),
@@ -77,7 +81,7 @@ public class Tests {
     @Test
     public void testCanPlaceShipOverlapWithExistingShip() {
         GameGrid grid = new GameGrid(new Dimension(10, 10));
-        List<Ship> existingShips = new ArrayList<>();
+        List<Ship> existingShips = new ArrayList<Ship>();
         Ship existingShip = new Ship(
                 new ShipTemplate("ExistingShip", Arrays.asList(new Coordinate(3, 3), new Coordinate(3, 4))),
                 new Coordinate(3, 3), 0
@@ -95,7 +99,7 @@ public class Tests {
     @Test
     public void testCanPlaceShipOnEmptyGrid() {
         GameGrid grid = new GameGrid(new Dimension(10, 10));
-        List<Ship> existingShips = new ArrayList<>();
+        List<Ship> existingShips = new ArrayList<Ship>();
 
         Ship ship = new Ship(
                 new ShipTemplate("TestShip", Arrays.asList(new Coordinate(0, 0), new Coordinate(0, 1))),

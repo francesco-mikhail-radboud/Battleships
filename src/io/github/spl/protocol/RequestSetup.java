@@ -1,10 +1,17 @@
 package io.github.spl.protocol; 
 
-public  class  RequestSetup  implements Command {
+public  class  RequestSetup  extends Command {
+	
+	
+	public RequestSetup(int id) {
+		super(id);
+	}
+
+	
 	
     @Override
 	public String serialize() {
-		return "SETUP:?.";
+		return super.serialize() +  "SETUP:?.";
 	}
 
 	
@@ -15,7 +22,8 @@ public  class  RequestSetup  implements Command {
             return true;
         }
 
-        return other instanceof RequestSetup;
+        return other instanceof RequestSetup && 
+        		super.equals(other);
     }
 
 

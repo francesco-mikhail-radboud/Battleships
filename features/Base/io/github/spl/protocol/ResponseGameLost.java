@@ -1,16 +1,17 @@
 package io.github.spl.protocol;
 
-public class ResponseGameLost implements Command {
+public class ResponseGameLost extends Command {
 
     private boolean isLost = false;
 
-	public ResponseGameLost(boolean isLost) {
+	public ResponseGameLost(int id, boolean isLost) {
+		super(id);
 		this.isLost = isLost;
 	}
 
     @Override
 	public String serialize() {
-		return "L:" + (isLost ? "Y" : "N") + ".";
+		return super.serialize() + "L:" + (isLost ? "Y" : "N") + ".";
 	}
 
 	public boolean isLost() {
@@ -27,6 +28,7 @@ public class ResponseGameLost implements Command {
         	return false;
         }
 
-        return this.isLost == ((ResponseGameLost) other).isLost;
+        return this.isLost == ((ResponseGameLost) other).isLost &&
+        		super.equals(other);
     }
 }

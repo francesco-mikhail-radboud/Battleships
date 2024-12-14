@@ -19,23 +19,23 @@ import io.github.spl.ships.ShipTemplate;
 public class Tests {
 	@Test
 	public void testProtocolParser() {
-		assertEquals(new RequestCoordinate() , ProtocolParser.parse("C:?."));
+		assertEquals(new RequestCoordinate(0) , ProtocolParser.parse("0:C:?."));
 		
-		assertEquals(new RequestGameLost(), ProtocolParser.parse("L:?."));
+		assertEquals(new RequestGameLost(0), ProtocolParser.parse("0:L:?."));
 		
-		assertEquals(new RequestSetup(), ProtocolParser.parse("SETUP:?."));
+		assertEquals(new RequestSetup(0), ProtocolParser.parse("0:SETUP:?."));
 		
-		assertEquals(new ResponseCoordinate(1, 2), ProtocolParser.parse("C:1;2."));
+		assertEquals(new ResponseCoordinate(0, 1, 2), ProtocolParser.parse("0:C:1;2."));
 		
-		assertEquals(new ResponseGameLost(true), ProtocolParser.parse("L:Y."));
-		assertEquals(new ResponseGameLost(false), ProtocolParser.parse("L:N."));
+		assertEquals(new ResponseGameLost(10, true), ProtocolParser.parse("10:L:Y."));
+		assertEquals(new ResponseGameLost(0, false), ProtocolParser.parse("0:L:N."));
 		
-		assertEquals(new ResponseHit(ResponseHitOption.HIT, "name"), ProtocolParser.parse("H:name."));
-		assertEquals(new ResponseHit(ResponseHitOption.MISS, null), ProtocolParser.parse("M."));
-		assertEquals(new ResponseHit(ResponseHitOption.SINK, "name"), ProtocolParser.parse("S:name."));
+		assertEquals(new ResponseHit(0, ResponseHitOption.HIT, "name"), ProtocolParser.parse("0:H:name."));
+		assertEquals(new ResponseHit(12, ResponseHitOption.MISS, null), ProtocolParser.parse("12:M."));
+		assertEquals(new ResponseHit(5, ResponseHitOption.SINK, "name"), ProtocolParser.parse("5:S:name."));
 		
-		assertEquals(new ResponseSetup(true), ProtocolParser.parse("SETUP:Y."));
-		assertEquals(new ResponseSetup(false), ProtocolParser.parse("SETUP:N."));
+		assertEquals(new ResponseSetup(9, true), ProtocolParser.parse("9:SETUP:Y."));
+		assertEquals(new ResponseSetup(11, false), ProtocolParser.parse("11:SETUP:N."));
 	}
 	
 	@Test

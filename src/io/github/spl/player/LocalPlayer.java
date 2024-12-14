@@ -70,14 +70,14 @@ public abstract  class  LocalPlayer  implements Player {
         for (Ship ship : ships) {
             if (ship.hit(coordinate)) {
                 if (ship.isSunk()) {
-                    return new ResponseHit(ResponseHitOption.SINK, ship.getName());
+                    return new ResponseHit(gameView.getGame().getStep(), ResponseHitOption.SINK, ship.getName());
                 } else {
-                    return new ResponseHit(ResponseHitOption.HIT, ship.getName());
+                    return new ResponseHit(gameView.getGame().getStep(), ResponseHitOption.HIT, ship.getName());
                 }
             }
         }
 
-        return new ResponseHit(ResponseHitOption.MISS, null);
+        return new ResponseHit(gameView.getGame().getStep(), ResponseHitOption.MISS, null);
     }
 
 	
@@ -85,11 +85,11 @@ public abstract  class  LocalPlayer  implements Player {
     public ResponseGameLost isGameLost() {
         for (Ship ship : ships) {
             if (!ship.isSunk()) {
-                return new ResponseGameLost(false);
+                return new ResponseGameLost(gameView.getGame().getStep(), false);
             }
         }
 
-        return new ResponseGameLost(true);
+        return new ResponseGameLost(gameView.getGame().getStep(), true);
     }
 
 	

@@ -17,10 +17,21 @@ public class Game {
 
     private GameType gameType;
 	
+    private int step;
+    
     public Game(GameType gameType, GameView gameView) {
         this.gameType = gameType;
         this.gameView = gameView;
+        this.step = 0;
     }
+    
+    public int getStep() {
+    	return step;
+    }
+    
+    public void setStep(int step) {
+		this.step = step;
+	}
     
     public void play() {
 

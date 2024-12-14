@@ -5,14 +5,15 @@ import io.github.spl.ships.Coordinate;
 /**
  * TODO description
  */
-public  class  ResponseCoordinate  implements Command {
+public  class  ResponseCoordinate  extends Command {
 	
 	
 	private final Coordinate coordinate;
 
 	
 	
-	public ResponseCoordinate(int x, int y) {
+	public ResponseCoordinate(int id, int x, int y) {
+		super(id);
 		this.coordinate = new Coordinate(x, y);
 	}
 
@@ -20,7 +21,7 @@ public  class  ResponseCoordinate  implements Command {
 
 	@Override
 	public String serialize() {
-		return "C:" + coordinate.getX() + ";" + coordinate.getY() + ".";
+		return super.serialize() + "C:" + coordinate.getX() + ";" + coordinate.getY() + ".";
 	}
 
 	
@@ -41,7 +42,8 @@ public  class  ResponseCoordinate  implements Command {
         	return false;
         }
 
-        return this.coordinate.equals(((ResponseCoordinate) other).coordinate);
+        return this.coordinate.equals(((ResponseCoordinate) other).coordinate) && 
+        		super.equals(other);
     }
 
 

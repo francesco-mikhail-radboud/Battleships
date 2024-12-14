@@ -3,7 +3,7 @@ package io.github.spl.protocol;
 /**
  * TODO description
  */
-public  class  ResponseHit  implements Command {
+public  class  ResponseHit  extends Command {
 	
 	
 	public static enum  ResponseHitOption {
@@ -18,7 +18,8 @@ public  class  ResponseHit  implements Command {
 
 	
 	
-	public ResponseHit(ResponseHitOption option, String name) {
+	public ResponseHit(int id, ResponseHitOption option, String name) {
+		super(id);
 		this.option = option;
 		this.name = name;
 	}
@@ -29,13 +30,13 @@ public  class  ResponseHit  implements Command {
 	public String serialize() {
 		switch (option) {
 			case HIT: {
-				return "H:" + name + ".";
+				return super.serialize() + "H:" + name + ".";
 			}
 			case MISS: {
-				return "M.";
+				return super.serialize() + "M.";
 			}
 			case SINK: {
-				return "S:" + name + ".";
+				return super.serialize() + "S:" + name + ".";
 			}
 		}
 		
@@ -76,7 +77,9 @@ public  class  ResponseHit  implements Command {
         	}
         }
         
-        return this.name.equals(otherResponseHit.name) && this.option.equals(otherResponseHit.option);
+        return this.name.equals(otherResponseHit.name) && 
+        		this.option.equals(otherResponseHit.option) && 
+        		super.equals(other);
     }
 
 

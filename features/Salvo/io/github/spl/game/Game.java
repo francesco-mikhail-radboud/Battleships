@@ -1,9 +1,13 @@
 package io.github.spl.game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.github.spl.player.Player;
 import io.github.spl.protocol.*;
 import io.github.spl.protocol.ResponseHit.ResponseHitOption;
 import io.github.spl.game.actions.*;
+import io.github.spl.ships.*;
 
 /**
  * TODO description
@@ -29,11 +33,11 @@ public class Game {
                 break;
             }
 
-            List<Coordinate> coordinates = new ArrayList<>();
-            for (int i = 0; i <= player1.getShips().size(); i++) {
+            List<Coordinate> coordinates = new ArrayList<Coordinate>();
+            for (int i = 0; i <= gameType.getTemplates().size(); i++) {
                 coordinates.add(player1.selectCoordinate().getCoordinate());
             }
-            ResponseCoordinateList responseCoordinateList = new ResponseCoordinateList(coordinates);
+            ResponseCoordinateList responseCoordinateList = new ResponseCoordinateList(getStep(), coordinates);
 
             // Process each coordinate
             for (Coordinate coordinate : responseCoordinateList.getCoordinateList()) {
@@ -80,6 +84,8 @@ public class Game {
             Player tmp = player1;
             player1 = player2;
             player2 = tmp;
+            
+            setStep(getStep() + 1);
         }
     }
 }

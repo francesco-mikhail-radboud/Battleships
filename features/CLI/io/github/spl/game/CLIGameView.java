@@ -17,8 +17,8 @@ public class CLIGameView extends GameView {
 	
 	private final Scanner scanner;
 	
-	public CLIGameView() {
-		super();
+	public CLIGameView(String[] args) {
+		super(args);
 
 		this.scanner = new Scanner(System.in);
 	}
@@ -46,7 +46,7 @@ public class CLIGameView extends GameView {
 			y = scanner.nextInt();
 		}
 
-		humanPlayer.getCommandQueue().add(new ResponseCoordinate(x, y));
+		humanPlayer.getCommandQueue().add(new ResponseCoordinate(game.getStep(), x, y));
 	}
 	
 	protected void processHit(Hit action) {
@@ -97,15 +97,20 @@ public class CLIGameView extends GameView {
 	protected void processSetup(Setup action) {
 		if (action.getPlayer() instanceof HumanPlayer) {
 			HumanPlayer humanPlayer = (HumanPlayer) action.getPlayer();
-			setupFleetFromUserInput(humanPlayer, game.getGameType().getTemplates());
+			//setupFleetFromUserInput(humanPlayer, game.getGameType().getTemplates());
+			setupRandomFleet(humanPlayer, game.getGameType().getTemplates());
 
-			humanPlayer.getCommandQueue().add(new ResponseSetup(true));
+			humanPlayer.getCommandQueue().add(new ResponseSetup(game.getStep(), true));
 		} else if (action.getPlayer() instanceof AIPlayer) {
 			AIPlayer aiPlayer = (AIPlayer) action.getPlayer();
 			setupRandomFleet(aiPlayer, game.getGameType().getTemplates());
 			
-			aiPlayer.getCommandQueue().add(new ResponseSetup(true));
+			aiPlayer.getCommandQueue().add(new ResponseSetup(game.getStep(), true)); 
 		}
+	}
+	
+	protected void processConnectivityError(ConnectivityError action) {
+		System.out.println("Connection interrupted with the player: " + action.getPlayer().getName()); 
 	}
 
 	public boolean checkListHits(int x, int y, GameGrid gameGrid) {
