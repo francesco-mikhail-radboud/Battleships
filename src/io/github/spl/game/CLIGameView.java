@@ -64,9 +64,12 @@ public  class  CLIGameView  extends GameView {
 
 	protected void processDamage(Damage action) {
 		if (action.getAttacker() instanceof LocalPlayer) {
-			ShipCoordinate coordinate = new ShipCoordinate(action.getHitCoordinate());
+			ShipCoordinate coordinate = new ShipCoordinate(action.getHitCoordinate(), action.getShipName());
 			coordinate.setIsHit(true);
 			((LocalPlayer) action.getAttacker()).getGameGrid().add(coordinate);
+		}
+		if (action.getAttacker() instanceof AIPlayer) {
+			((AIPlayer) action.getAttacker()).addAdjacentCoordinates(action.getHitCoordinate(), action.getShipName());
 		}
 		System.out.println("Player " + action.getDefender().getName() + 
 			" is attacked by " + action.getAttacker().getName() + " , Result: ship \"" + action.getShipName() + "\" is damaged in the coordinate: " + action.getHitCoordinate().toString());
@@ -87,9 +90,12 @@ public  class  CLIGameView  extends GameView {
 
 	protected void processSinkage(Sinkage action) {
 		if (action.getAttacker() instanceof LocalPlayer) {
-			ShipCoordinate coordinate = new ShipCoordinate(action.getLastCoordinateHit());
+			ShipCoordinate coordinate = new ShipCoordinate(action.getLastCoordinateHit(), action.getShipName());
 			coordinate.setIsHit(true);
 			((LocalPlayer) action.getAttacker()).getGameGrid().add(coordinate);
+		}
+		if (action.getAttacker() instanceof AIPlayer) {
+			((AIPlayer) action.getAttacker()).updateRemainingOpponentShips(action);
 		}
 		System.out.println("Player " + action.getDefender().getName() + 
 				" is attacked by " + action.getAttacker().getName() + ", Result: ship \"" + action.getShipName() + "\" sank.");
@@ -116,12 +122,14 @@ public  class  CLIGameView  extends GameView {
 	protected void processSetup(Setup action) {
 		if (action.getPlayer() instanceof HumanPlayer) {
 			HumanPlayer humanPlayer = (HumanPlayer) action.getPlayer();
-			setupFleetFromUserInput(humanPlayer, game.getGameType().getTemplates());
+			setupRandomFleet(humanPlayer, game.getGameType().getTemplates());
+			// setupFleetFromUserInput(humanPlayer, game.getGameType().getTemplates());
 
 			humanPlayer.getCommandQueue().add(new ResponseSetup(true));
 		} else if (action.getPlayer() instanceof AIPlayer) {
 			AIPlayer aiPlayer = (AIPlayer) action.getPlayer();
 			setupRandomFleet(aiPlayer, game.getGameType().getTemplates());
+			aiPlayer.initializeRemainingOpponentShips(game.getGameType().getTemplates());
 			
 			aiPlayer.getCommandQueue().add(new ResponseSetup(true));
 		}
