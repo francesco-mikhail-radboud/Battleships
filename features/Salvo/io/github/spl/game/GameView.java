@@ -16,17 +16,7 @@ import io.github.spl.ships.ShipTemplate;
 public abstract class GameView {
 
     public static GameType createBasicGameType() {
-        List<Coordinate> coordinateList = new ArrayList<Coordinate>();
-        coordinateList.add(new Coordinate(0, 0));
-
-        ShipTemplate ship1 = new ShipTemplate("basic", coordinateList);
-
-        List<ShipTemplate> shipTemplates = new ArrayList<ShipTemplate>();
-        shipTemplates.add(ship1);
-
-        //GameType standartType = new GameType(new Dimension(10, 10), shipTemplates);
-        GameType standartType = new GameType(new Dimension(10, 10), createBasicFleet());
-        return standartType;
+        return new GameType(new Dimension(10, 10), createBasicFleet());
     }
 
     public GameView(String[] args) {
