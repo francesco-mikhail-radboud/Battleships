@@ -5,10 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream; 
 
 import java.util.ArrayList; 
+import java.util.Arrays; 
 import java.util.List; 
 import java.util.Random; 
 import java.util.concurrent.ConcurrentLinkedQueue; 
 
+import io.github.spl.exceptions.GameViewException; 
 import io.github.spl.game.actions.*; 
 import io.github.spl.player.LocalPlayer; 
 import io.github.spl.ships.Coordinate; 
@@ -35,12 +37,34 @@ public abstract   class  GameView {
 	protected Game game;
 
 	
+	protected String USERNAME;
 
-	public GameView  (String[] args) {
-		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
 	
-		this.game = new Game(createBasicGameType(), this);
-	}
+	protected boolean IS_HUMAN = true;
+
+	
+
+    public GameView  (String[] args) {
+		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
+		if (args.length < 2) {
+			throw new GameViewException("Expected the username as a first argument, "
+					+ "and player type (\"human\"/\"ai\") as a second argument!");
+		}
+		this.USERNAME = args[0];
+		if (!args[1].equals("human") && !args[1].equals("ai")) {
+			throw new GameViewException("Incorrect player type! "
+					+ "Provide it as a second argument. "
+					+ "Valid options: \"human\"/\"ai\"");
+		}
+		if (args[1].equals("human")) {
+			this.IS_HUMAN = true;
+		} else {
+			this.IS_HUMAN = false;
+		}
+		args = Arrays.copyOfRange(args, 2, args.length);
+	
+        this.game = new Game(createBasicGameType(), this);
+    }
 
 	
 
@@ -65,14 +89,15 @@ public abstract   class  GameView {
 
 	
     public void run() {
-        HumanPlayer player1 = new HumanPlayer("Human", new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
-        //humanPlayer.addShip(game.getGameType().getTemplates().get(0), new Coordinate(1, 1), 0);
-        //setupRandomFleet(player1, game.getGameType().getTemplates());
+    	LocalPlayer player1 = null;
+    	if (IS_HUMAN) {
+    		player1 = new HumanPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
+    	} else {
+    		player1 = new AIPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
+    	}
 
         AIPlayer player2 = new AIPlayer("AI", new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
-        // aiPlayer.addShip(game.getGameType().getTemplates().get(0), new Coordinate(2, 2), 0);
-        // setupRandomFleet(player2, game.getGameType().getTemplates());
-		
+
         game.setPlayer1(player1);
         game.setPlayer2(player2);
         
@@ -207,24 +232,24 @@ public abstract   class  GameView {
     }
 
 	
- 
-	public static GameType createBasicGameType() {
-		List<Coordinate> coordinateList = new ArrayList<Coordinate>();
-		coordinateList.add(new Coordinate(0, 0));
 
-		ShipTemplate ship1 = new ShipTemplate("basic", coordinateList);
+    public static GameType createBasicGameType() {
+        List<Coordinate> coordinateList = new ArrayList<Coordinate>();
+        coordinateList.add(new Coordinate(0, 0));
 
-		List<ShipTemplate> shipTemplates = new ArrayList<ShipTemplate>();
-		shipTemplates.add(ship1);
+        ShipTemplate ship1 = new ShipTemplate("basic", coordinateList);
 
-		//GameType standardType = new GameType(new Dimension(10, 10), shipTemplates);
-		GameType standardType = new GameType(new Dimension(10, 10), createBasicFleet());
-		return standardType;
-	}
+        List<ShipTemplate> shipTemplates = new ArrayList<ShipTemplate>();
+        shipTemplates.add(ship1);
+
+        //GameType standartType = new GameType(new Dimension(10, 10), shipTemplates);
+        GameType standartType = new GameType(new Dimension(10, 10), createBasicFleet());
+        return standartType;
+    }
 
 	
 
-	public static List<ShipTemplate> createBasicFleet() {
+    public static List<ShipTemplate> createBasicFleet() {
         List<ShipTemplate> shipTemplates = new ArrayList<ShipTemplate>();
 
         // Submarine: 3 ships, length 2
@@ -246,13 +271,13 @@ public abstract   class  GameView {
         }
 
         // Carrier: 1 ship, length 5
-        List<Coordinate> coordinates = createCoordinates(5); 
+        List<Coordinate> coordinates = createCoordinates(5);
         shipTemplates.add(new ShipTemplate("Carrier", coordinates));
 
         return shipTemplates;
     }
 
-	
+	 
 
     private static List<Coordinate> createCoordinates(int length) {
         List<Coordinate> coordinates = new ArrayList<Coordinate>();

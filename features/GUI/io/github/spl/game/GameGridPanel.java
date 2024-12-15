@@ -12,47 +12,21 @@ import io.github.spl.player.*;
 import io.github.spl.ships.*;
 import io.github.spl.protocol.*;
 
-public class GameGridPanel extends JPanel {
-	private List<ShipCoordinate> shipCoordinates;
-	private JButton[][] gridButtons;
-	private int gridHeight;
-	private int gridWidth;
-	private boolean isPlayer;
+public abstract class GameGridPanel extends JPanel {
 	
-	public GameGridPanel(GameGrid gameGrid) {
+	private final Font TEXT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 14);
+	
+	public final static int GAME_GRID_SIZE = 500;
+
+	protected JButton[][] gridButtons;
+	protected int gridHeight;
+	protected int gridWidth;
+	protected List<ShipCoordinate> shipCoordinates;
+	
+	public GameGridPanel(Dimension dimension) {
 		super();
-		this.shipCoordinates = gameGrid.getListOfCoordsHit();
-		this.isPlayer = false;
 		
-		this.gridHeight = gameGrid.getDimension().getHeight();
-		this.gridWidth = gameGrid.getDimension().getWidth();
-		
-		setLayout(new GridLayout(gridHeight, gridWidth));
-		this.gridButtons = new JButton[gridHeight][gridWidth];
-		for (int row = 0; row < gridHeight; row++) {
-			for (int col = 0; col < gridWidth; col++) {
-				JButton button = new JButton();
-				button.setBackground(Color.BLUE);
-				button.setEnabled(false);
-				
-				gridButtons[row][col] = button;
-				add(button);
-			}
-		}
-	}
-	
-	public JButton[][] getGridButtons() {
-		return gridButtons;
-	}
-	
-	public GameGridPanel(List<Ship> ships, Dimension dimension) {
-		super();
-		this.shipCoordinates = new ArrayList<ShipCoordinate>();
-		for (Ship ship : ships) {
-			shipCoordinates.addAll(ship.getShipCoordinates());
-		}
-		
-		this.isPlayer = true;
+		setPreferredSize(new java.awt.Dimension(GAME_GRID_SIZE, GAME_GRID_SIZE));
 		
 		this.gridHeight = dimension.getHeight();
 		this.gridWidth = dimension.getWidth();
@@ -64,12 +38,48 @@ public class GameGridPanel extends JPanel {
 				JButton button = new JButton();
 				button.setBackground(Color.BLUE);
 				button.setEnabled(false);
+				button.setFont(TEXT_FONT);
 				
 				gridButtons[row][col] = button;
 				add(button);
 			}
 		}
 	}
+	
+	public JButton[][] getGridButtons() {
+		return gridButtons;
+	}
+	
+	public void removeAllActionListeners() {
+		for (int row = 0; row < gridWidth; row++) {
+			for (int col = 0; col < gridHeight; col++) {
+				JButton button = gridButtons[row][col];
+				ActionListener[] listeners = button.getActionListeners();
+		    	for (ActionListener listener : listeners) {
+		    		button.removeActionListener(listener);
+				}
+			}
+		}
+	}
+	
+	public void clearButtonsText() {
+		for (int row = 0; row < gridWidth; row++) {
+			for (int col = 0; col < gridHeight; col++) {
+				JButton button = gridButtons[row][col];
+				button.setText("");
+			}
+		}
+		update();
+	}
+	
+	public void setButtonText(int row, int col, String text) {
+		if (row >= 0 && row < gridHeight && col >= 0 && col < gridWidth) {
+			JButton button = gridButtons[row][col];
+			button.setText(text);
+		}
+	}
+	
+
 	
 	public void setEnabled(boolean isEnabled) {
 		for (int row = 0; row < gridHeight; row++) {
@@ -80,33 +90,6 @@ public class GameGridPanel extends JPanel {
 	}
 	
 	public void update() {
-		for (int row = 0; row < gridHeight; row++) {
-			for (int col = 0; col < gridWidth; col++) {
-				ShipCoordinate current = new ShipCoordinate(row, col);
-				
-				ShipCoordinate hitCoord = null;
-                for (ShipCoordinate coord : shipCoordinates){
-                    if(coord.equals(current)){
-                        hitCoord = coord; 
-                        break;
-                    }
-                }
-                if (hitCoord != null) {
-                    if (hitCoord.getIsHit()) {
-                        gridButtons[row][col].setBackground(Color.RED);
-                        gridButtons[row][col].setText("X");
-                    } else {
-                    	if (isPlayer) {
-                    		gridButtons[row][col].setBackground(Color.YELLOW);
-                    	} else {
-                    		gridButtons[row][col].setBackground(Color.WHITE);
-                    		gridButtons[row][col].setText("O");
-                    	}
-                    }
-                } else {
-                	gridButtons[row][col].setBackground(Color.BLUE);
-                }
-			}
-		}
+
 	}
 }

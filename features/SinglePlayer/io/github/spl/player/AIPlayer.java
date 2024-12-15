@@ -36,8 +36,8 @@ public class AIPlayer extends LocalPlayer {
         this.gridWidth = gameGrid.getDimension().getWidth();
         this.gridHeight = gameGrid.getDimension().getHeight();
         this.probabilityMap = new int[gridWidth][gridHeight];
-        this.remainingOpponentShips = new ArrayList<>();
-        this.targetQueue = new LinkedList<>();
+        this.remainingOpponentShips = new ArrayList<ShipTemplate>();
+        this.targetQueue = new LinkedList<Coordinate>();
         this.lastHitDirection = null;
         initializeProbabilityMap();
     }
@@ -56,7 +56,12 @@ public class AIPlayer extends LocalPlayer {
 
     public void updateRemainingOpponentShips(Sinkage action) {
         String sunkShipName = action.getShipName();
-        remainingOpponentShips.removeIf(ship -> ship.getName().equals(sunkShipName));
+        for (ShipTemplate shipTemplate : remainingOpponentShips) {
+        	if (shipTemplate.getName().equals(sunkShipName)) {
+        		remainingOpponentShips.remove(shipTemplate);
+        		break;
+        	}
+        }
         targetQueue.clear();
     }
 
@@ -64,13 +69,16 @@ public class AIPlayer extends LocalPlayer {
     public ResponseCoordinate selectCoordinate() {
         if (!targetQueue.isEmpty()) {
             Coordinate nextTarget = targetQueue.poll();
-            return new ResponseCoordinate(nextTarget.getX(), nextTarget.getY());
+            
+            return new ResponseCoordinate(gameView.getGame().getStep(), nextTarget.getX(), nextTarget.getY());
         }
 
         updateProbabilityMap();
         Coordinate bestCoordinate = getHighestProbabilityCoordinate();
+        
         return new ResponseCoordinate(gameView.getGame().getStep(), bestCoordinate.getX(), bestCoordinate.getY());
     }
+    
     private void updateProbabilityMap() {
         initializeProbabilityMap(); // Reset Probability Map
 
@@ -115,7 +123,7 @@ public class AIPlayer extends LocalPlayer {
         return true;
     }
 
-    private Coordinate getHighestProbabilityCoordinate() {
+    public Coordinate getHighestProbabilityCoordinate() {
         int maxProbability = -1;
         Coordinate bestCoordinate = null;
 
@@ -127,8 +135,23 @@ public class AIPlayer extends LocalPlayer {
                 }
             }
         }
+        
+        if (maxProbability == 0) {
+        	bestCoordinate = randomCoordToHit();
+        }
+        
         return bestCoordinate;
     }
+    
+    public Coordinate randomCoordToHit() {
+        int x = getRandomHit(gameGrid.getDimension().getWidth());
+        int y = getRandomHit(gameGrid.getDimension().getHeight());
+        return new Coordinate(x, y);
+    }
+
+    public int getRandomHit(int maxDimension) {
+		return (int)(Math.random() * maxDimension);
+	}
 
     public void addAdjacentCoordinates(Coordinate hit, String shipName) {
         int x = hit.getX();
@@ -226,28 +249,5 @@ public class AIPlayer extends LocalPlayer {
             default:
                 return null;
         }
-    }
-
-
-    /*
-    TODO chance test
-    public Coordinate coordToHit() {
-        int x = getRandomHit(gameGrid.getDimension().getWidth());
-        int y = getRandomHit(gameGrid.getDimension().getHeight());
-        return new Coordinate(x, y);
-    }
-
-    public int getRandomHit(int maxDimension) {
-		return (int)(Math.random() * maxDimension);
-	}
-     */
-
-    public boolean checkListHits(int x, int y, GameGrid gameGrid) {
-        for (ShipCoordinate coord : gameGrid.getListOfCoordsHit()) {
-            if (coord.getX() == x && coord.getY() == y) {
-                return false;
-            }
-        }
-        return true;
     }
 }

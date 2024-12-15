@@ -22,10 +22,10 @@
 						<feature name="Pictures"/>
 					</and>
 				</alt>
-				<or abstract="true" mandatory="true" name="GameMode">
+				<alt abstract="true" mandatory="true" name="GameMode">
 					<feature name="SinglePlayer"/>
 					<feature name="Multiplayer"/>
-				</or>
+				</alt>
 				<alt abstract="true" mandatory="true" name="GameType">
 					<feature name="Standard"/>
 					<feature name="Salvo"/>

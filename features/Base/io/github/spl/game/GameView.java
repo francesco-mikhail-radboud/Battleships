@@ -4,10 +4,12 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import io.github.spl.exceptions.GameViewException;
 import io.github.spl.game.actions.*;
 import io.github.spl.player.LocalPlayer;
 import io.github.spl.ships.Coordinate;
@@ -22,9 +24,27 @@ public abstract class GameView {
 	
 	protected ConcurrentLinkedQueue<GameAction> gameActions;
 	protected Game game;
+	protected String USERNAME;
+	protected boolean IS_HUMAN = true;
 
 	public GameView(String[] args) {
 		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
+		if (args.length < 2) {
+			throw new GameViewException("Expected the username as a first argument, "
+					+ "and player type (\"human\"/\"ai\") as a second argument!");
+		}
+		this.USERNAME = args[0];
+		if (!args[1].equals("human") && !args[1].equals("ai")) {
+			throw new GameViewException("Incorrect player type! "
+					+ "Provide it as a second argument. "
+					+ "Valid options: \"human\"/\"ai\"");
+		}
+		if (args[1].equals("human")) {
+			this.IS_HUMAN = true;
+		} else {
+			this.IS_HUMAN = false;
+		}
+		args = Arrays.copyOfRange(args, 2, args.length);
 	}
 
 	public void run() {

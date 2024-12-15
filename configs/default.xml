@@ -9,10 +9,10 @@
 	<feature name="Pictures"/>
 	<feature automatic="selected" name="GameMode"/>
 	<feature manual="selected" name="SinglePlayer"/>
-	<feature name="Multiplayer"/>
+	<feature automatic="unselected" name="Multiplayer"/>
 	<feature automatic="selected" name="GameType"/>
-	<feature manual="selected" name="Standard"/>
-	<feature automatic="unselected" name="Salvo"/>
+	<feature automatic="unselected" name="Standard"/>
+	<feature manual="selected" name="Salvo"/>
 	<feature name="GameDifficulty"/>
 	<feature name="GridSize"/>
 	<feature name="Ships"/>

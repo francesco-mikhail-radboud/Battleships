@@ -15,14 +15,15 @@ import java.util.Random;
  */
 public abstract class GameView {
     public void run() {
-        HumanPlayer player1 = new HumanPlayer("Human", new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
-        //humanPlayer.addShip(game.getGameType().getTemplates().get(0), new Coordinate(1, 1), 0);
-        //setupRandomFleet(player1, game.getGameType().getTemplates());
+    	LocalPlayer player1 = null;
+    	if (IS_HUMAN) {
+    		player1 = new HumanPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
+    	} else {
+    		player1 = new AIPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
+    	}
 
         AIPlayer player2 = new AIPlayer("AI", new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
-        // aiPlayer.addShip(game.getGameType().getTemplates().get(0), new Coordinate(2, 2), 0);
-        // setupRandomFleet(player2, game.getGameType().getTemplates());
-		
+
         game.setPlayer1(player1);
         game.setPlayer2(player2);
         

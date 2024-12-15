@@ -7,6 +7,7 @@ import io.github.spl.game.GameGrid;
 import io.github.spl.game.GameView;
 import io.github.spl.ships.Coordinate;
 import io.github.spl.ships.Ship;
+import io.github.spl.ships.ShipCoordinate;
 import io.github.spl.ships.ShipTemplate;
 import io.github.spl.protocol.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -31,6 +32,15 @@ public abstract class LocalPlayer implements Player {
         this.gameGrid = gameGrid;
         this.commandQueue = new ConcurrentLinkedQueue<Command>();
         this.gameView = gameView;
+    }
+    
+    public static boolean checkListHits(int x, int y, GameGrid gameGrid) {
+        for (ShipCoordinate coord : gameGrid.getListOfCoordsHit()) {
+            if (coord.getX() == x && coord.getY() == y) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean addShip(ShipTemplate shipTemplate, Coordinate coordinate, int timesRotated) {

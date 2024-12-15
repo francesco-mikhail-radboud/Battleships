@@ -36,7 +36,6 @@ public class OnlinePlayer implements Player {
             throw new RuntimeException(e);
         }
 		this.gameView = gameView;
-		this.gameGrid = new GameGrid(gameView.getGame().getGameType().getDimension());
 	}
 	
 	public ResponseHit hit(Coordinate coordinate) {

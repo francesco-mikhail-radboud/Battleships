@@ -17,7 +17,9 @@ import io.github.spl.ships.ShipCoordinate;
 import io.github.spl.ships.ShipTemplate; import static org.junit.jupiter.api.Assertions.*; 
 import io.github.spl.game.*; 
 import io.github.spl.player.*; 
-import java.util.Arrays; public   class  Tests {
+import java.util.Arrays; 
+
+public   class  Tests {
 	
 	@Test
 	public void testProtocolParser() {
@@ -130,21 +132,9 @@ import java.util.Arrays; public   class  Tests {
         GameGrid mockGrid = new GameGrid(new Dimension(10, 10));
         AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<Ship>(), mockGrid, null);
 
-        Coordinate coordinate = mockAIPlayer.coordToHit();
+        Coordinate coordinate = mockAIPlayer.getHighestProbabilityCoordinate();
         assertTrue( coordinate.getX() >= 0 && coordinate.getX() < mockGrid.getDimension().getWidth());
         assertTrue(coordinate.getY() >= 0 && coordinate.getY() < mockGrid.getDimension().getHeight());
-    }
-
-	
-
-    @Test
-    public void testGetRandomHitWithinBounds() {
-        AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<Ship>(), null, null);
-
-        for (int i = 0; i < 100; i++) {
-            int randomValue = mockAIPlayer.getRandomHit(10);
-            assertTrue(randomValue >= 0 && randomValue < 10);
-        }
     }
 
 	
@@ -157,7 +147,7 @@ import java.util.Arrays; public   class  Tests {
 
         AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<Ship>(), mockGrid, null);
 
-        assertFalse(mockAIPlayer.checkListHits(3, 5, mockGrid));
+        assertFalse(LocalPlayer.checkListHits(3, 5, mockGrid));
     }
 
 	
@@ -170,7 +160,7 @@ import java.util.Arrays; public   class  Tests {
 
         AIPlayer mockAIPlayer = new AIPlayer("MockAI", new ArrayList<Ship>(), mockGrid, null);
 
-        assertTrue(mockAIPlayer.checkListHits(4, 4, mockGrid));
+        assertTrue(LocalPlayer.checkListHits(4, 4, mockGrid));
     }
 
 	

@@ -16,7 +16,15 @@ public class Game {
     public void play() {
 
         ResponseSetup player1Response = player1.setup();
+        if (player1Response == null) {
+        	gameView.addGameAction(new ConnectivityError(player1));
+        	return;
+        }
         ResponseSetup player2Response = player2.setup();
+        if (player2Response == null) {
+        	gameView.addGameAction(new ConnectivityError(player2));
+        	return;
+        }
         
         if (!(player1Response.isSuccess() && player2Response.isSuccess())) {
         	return;
@@ -28,21 +36,40 @@ public class Game {
         	
         	// Check if player 1 didn't lose the game
             ResponseGameLost responseLost = player1.isGameLost();
+            if (responseLost == null) {
+            	gameView.addGameAction(new ConnectivityError(player1));
+            	break;
+            }
             if (responseLost.isLost()) {
             	gameView.addGameAction(new GameWin(player2));
                 break;
             }
 
             List<Coordinate> coordinates = new ArrayList<Coordinate>();
-            for (int i = 0; i <= gameType.getTemplates().size(); i++) {
-                coordinates.add(player1.selectCoordinate().getCoordinate());
+            for (int i = 0; i < gameType.getTemplates().size(); i++) {
+            	int oldStep = getStep();
+            	setStep(oldStep * gameType.getTemplates().size() + i);
+            	ResponseCoordinate responseCoordinate = player1.selectCoordinate();
+            	setStep(oldStep);
+                if (responseCoordinate == null) {
+                	gameView.addGameAction(new ConnectivityError(player1));
+                	return;
+                }
+                coordinates.add(responseCoordinate.getCoordinate());
             }
             ResponseCoordinateList responseCoordinateList = new ResponseCoordinateList(getStep(), coordinates);
 
             // Process each coordinate
-            for (Coordinate coordinate : responseCoordinateList.getCoordinateList()) {
-                ResponseHit responseHit = player2.hit(coordinate);
-
+            for (int i = 0; i < responseCoordinateList.getCoordinateList().size(); i++) {
+            	int oldStep = getStep();
+            	setStep(oldStep * gameType.getTemplates().size() + i);
+            	Coordinate coordinate = responseCoordinateList.getCoordinateList().get(i);
+            	ResponseHit responseHit = player2.hit(coordinate);
+            	setStep(oldStep);
+                if (responseHit == null) {
+                	gameView.addGameAction(new ConnectivityError(player2));
+                	return;
+                }
                 switch (responseHit.getHitOption()) {
                     case ResponseHitOption.HIT:
                         gameView.addGameAction(new Damage(player1, player2, responseHit.getShipName(), coordinate));
@@ -75,6 +102,10 @@ public class Game {
             
             // Check if player 2 lost the game
             responseLost = player2.isGameLost();
+            if (responseLost == null) {
+            	gameView.addGameAction(new ConnectivityError(player2));
+            	break;
+            }
             if (responseLost.isLost()) {
             	gameView.addGameAction(new GameWin(player1));
             	break;
