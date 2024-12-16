@@ -16,7 +16,7 @@ public abstract class GameGridPanel extends JPanel {
 	
 	private final Font TEXT_FONT = new Font(Font.MONOSPACED, Font.BOLD, 14);
 	
-	public final static int GAME_GRID_SIZE = 500;
+	public final static int GAME_GRID_SIZE = 800;
 
 	protected JButton[][] gridButtons;
 	protected int gridHeight;

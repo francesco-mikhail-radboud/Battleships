@@ -4,13 +4,9 @@ import io.github.spl.game.actions.RequestCoordinates;
 
 import io.github.spl.player.Player; 
 import io.github.spl.ships.ShipTemplate; 
-
-import java.util.ArrayList; 
-import java.util.List; 
 import io.github.spl.protocol.*; 
 import io.github.spl.protocol.ResponseHit.ResponseHitOption; 
 import io.github.spl.game.actions.*; 
-import io.github.spl.ships.*; 
 
 /**
  * TODO description
@@ -79,6 +75,7 @@ public   class  Game {
         	gameView.addGameAction(new GameTick(player1, player2));
         	
         	// Check if player 1 didn't lose the game
+            System.out.println("Player1 is game lost:");
             ResponseGameLost responseLost = player1.isGameLost();
             if (responseLost == null) {
             	gameView.addGameAction(new ConnectivityError(player1));
@@ -88,63 +85,33 @@ public   class  Game {
             	gameView.addGameAction(new GameWin(player2));
                 break;
             }
-
-            List<Coordinate> coordinates = new ArrayList<Coordinate>();
-            for (int i = 0; i < gameType.getTemplates().size(); i++) {
-            	int oldStep = getStep();
-            	setStep(oldStep * gameType.getTemplates().size() + i);
-            	ResponseCoordinate responseCoordinate = player1.selectCoordinate();
-            	setStep(oldStep);
-                if (responseCoordinate == null) {
-                	gameView.addGameAction(new ConnectivityError(player1));
-                	return;
-                }
-                coordinates.add(responseCoordinate.getCoordinate());
-            }
-            ResponseCoordinateList responseCoordinateList = new ResponseCoordinateList(getStep(), coordinates);
-
-            // Process each coordinate
-            for (int i = 0; i < responseCoordinateList.getCoordinateList().size(); i++) {
-            	int oldStep = getStep();
-            	setStep(oldStep * gameType.getTemplates().size() + i);
-            	Coordinate coordinate = responseCoordinateList.getCoordinateList().get(i);
-            	ResponseHit responseHit = player2.hit(coordinate);
-            	setStep(oldStep);
-                if (responseHit == null) {
-                	gameView.addGameAction(new ConnectivityError(player2));
-                	return;
-                }
-                switch (responseHit.getHitOption()) {
-                    case ResponseHitOption.HIT:
-                        gameView.addGameAction(new Damage(player1, player2, responseHit.getShipName(), coordinate));
-                        break;
-                    case ResponseHitOption.MISS:
-                        gameView.addGameAction(new Miss(player1, player2, coordinate));
-                        break;
-                    case ResponseHitOption.SINK:
-                        gameView.addGameAction(new Sinkage(player1, player2, coordinate, responseHit.getShipName()));
-                        break;
-                }
-            }
-
             // perform hit from player 1 to player 2
-            /*ResponseCoordinate responseCoordinate = player1.selectCoordinate();
+            System.out.println("Player1 select coordinate");
+            ResponseCoordinate responseCoordinate = player1.selectCoordinate();
+            if (responseCoordinate == null) {
+            	gameView.addGameAction(new ConnectivityError(player1));
+            	break;
+            }
+            System.out.println("Player2 hit");
             ResponseHit responseHit = player2.hit(responseCoordinate.getCoordinate());
-
+            if (responseHit == null) {
+            	gameView.addGameAction(new ConnectivityError(player2));
+            	break;
+            }
             switch (responseHit.getHitOption()) {
-                case ResponseHitOption.HIT:
+                case HIT:
                 	gameView.addGameAction(new Damage(player1, player2, responseHit.getShipName(), responseCoordinate.getCoordinate()));
                     break;
-                case ResponseHitOption.MISS:
+                case MISS:
                 	gameView.addGameAction(new Miss(player1, player2, responseCoordinate.getCoordinate()));
                     break;
-                case ResponseHitOption.SINK:
+                case SINK:
                 	gameView.addGameAction(new Sinkage(player1, player2, responseCoordinate.getCoordinate(), responseHit.getShipName()));
                     break;
             }
-             */
             
             // Check if player 2 lost the game
+            System.out.println("Player2 is game lost");
             responseLost = player2.isGameLost();
             if (responseLost == null) {
             	gameView.addGameAction(new ConnectivityError(player2));
@@ -156,6 +123,7 @@ public   class  Game {
             }
 
             // swap player 1 and player 2
+            System.out.println("Swap");
             Player tmp = player1;
             player1 = player2;
             player2 = tmp;

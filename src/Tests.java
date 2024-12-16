@@ -17,9 +17,7 @@ import io.github.spl.ships.ShipCoordinate;
 import io.github.spl.ships.ShipTemplate; import static org.junit.jupiter.api.Assertions.*; 
 import io.github.spl.game.*; 
 import io.github.spl.player.*; 
-import java.util.Arrays; 
-
-public   class  Tests {
+import java.util.Arrays; public   class  Tests {
 	
 	@Test
 	public void testProtocolParser() {

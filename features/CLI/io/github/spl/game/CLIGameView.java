@@ -24,29 +24,33 @@ public class CLIGameView extends GameView {
 	}
 
 	protected void processRequestCoordinates(RequestCoordinates action) {
-
-		HumanPlayer humanPlayer = ((HumanPlayer) action.getPlayer());
-
-		System.out.print("Select the coordinate to hit (row column):");
-		int x = scanner.nextInt();
-		int y = scanner.nextInt();
-
-		//validate the input 
-		int gridWidth = game.getGameType().getDimension().getWidth();
-		int gridHeight = game.getGameType().getDimension().getHeight();
+		if (action.getPlayer() instanceof HumanPlayer) {
+			HumanPlayer humanPlayer = ((HumanPlayer) action.getPlayer());
 	
-		while (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight || 
-			   !checkListHits(x, y, humanPlayer.getGameGrid())) {
-			if (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight) {
-				System.out.print("The selected coordinates are incorrect, please try again (row column):");
-			} else {
-				System.out.print("The selected coordinates have already been affected, select different ones (row column):");
+			System.out.print("Select the coordinate to hit (row column):");
+			int x = scanner.nextInt();
+			int y = scanner.nextInt();
+	
+			//validate the input 
+			int gridWidth = game.getGameType().getDimension().getWidth();
+			int gridHeight = game.getGameType().getDimension().getHeight();
+		
+			while (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight || 
+				   !checkListHits(x, y, humanPlayer.getGameGrid())) {
+				if (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight) {
+					System.out.print("The selected coordinates are incorrect, please try again (row column):");
+				} else {
+					System.out.print("The selected coordinates have already been affected, select different ones (row column):");
+				}
+				x = scanner.nextInt();
+				y = scanner.nextInt();
 			}
-			x = scanner.nextInt();
-			y = scanner.nextInt();
+	
+			humanPlayer.getCommandQueue().add(new ResponseCoordinate(game.getStep(), x, y));
+		} else {
+			AIPlayer aiPlayer = (AIPlayer) action.getPlayer();
+    		aiPlayer.getCommandQueue().add(new ResponseCoordinate(game.getStep(), -1, -1));
 		}
-
-		humanPlayer.getCommandQueue().add(new ResponseCoordinate(game.getStep(), x, y));
 	}
 	
 	protected void processHit(Hit action) {

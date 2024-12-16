@@ -19,7 +19,7 @@ public abstract  class  GameGridPanel  extends JPanel {
 
 	
 	
-	public final static int GAME_GRID_SIZE = 500;
+	public final static int GAME_GRID_SIZE = 800;
 
 	
 

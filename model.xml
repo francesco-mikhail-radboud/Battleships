@@ -2,7 +2,6 @@
 <featureModel>
 	<properties>
 		<graphics key="autolayoutconstraints" value="false"/>
-		<graphics key="legendposition" value="791,43"/>
 		<graphics key="legendautolayout" value="true"/>
 		<graphics key="showconstraints" value="true"/>
 		<graphics key="showshortnames" value="false"/>
@@ -15,14 +14,10 @@
 		<and abstract="true" mandatory="true" name="Battleships">
 			<and name="Base">
 				<alt abstract="true" mandatory="true" name="UI">
-					<and name="CLI">
-						<feature name="ColoredInterface"/>
-					</and>
-					<and name="GUI">
-						<feature name="Pictures"/>
-					</and>
+					<feature name="CLI"/>
+					<feature name="GUI"/>
 				</alt>
-				<alt abstract="true" mandatory="true" name="GameMode">
+				<alt mandatory="true" name="GameMode">
 					<feature name="SinglePlayer"/>
 					<feature name="Multiplayer"/>
 				</alt>
@@ -30,7 +25,7 @@
 					<feature name="Standard"/>
 					<feature name="Salvo"/>
 				</alt>
-				<or abstract="true" name="GameDifficulty">
+				<or name="GameDifficulty">
 					<feature name="GridSize"/>
 					<feature name="Ships"/>
 				</or>

@@ -3,6 +3,7 @@ package io.github.spl.game;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -43,14 +44,15 @@ public abstract class GameView {
 		} catch (NumberFormatException e) {
 			throw new GameViewException("Unable to parse the opponent's port number!");
 		}
+		args = Arrays.copyOfRange(args, 3, args.length);
 	}
 	
     public void run() {
     	LocalPlayer player1 = null;
     	if (IS_HUMAN) {
-    		player1 = new HumanPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
+    		player1 = new HumanPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this, myPort);
     	} else {
-    		player1 = new AIPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
+    		player1 = new AIPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this, myPort);
     	}
     	
         Socket socket = null;

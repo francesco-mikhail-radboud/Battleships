@@ -23,13 +23,6 @@ import io.github.spl.protocol.ResponseHit.ResponseHitOption;
 import io.github.spl.game.actions.*;
 
 public abstract class LocalPlayer implements Player {
-
-    protected String name;
-    protected List<Ship> ships;
-    protected GameGrid gameGrid;
-
-    protected ConcurrentLinkedQueue<Command> commandQueue;
-    protected GameView gameView;
     
     protected ServerSocket socket;
     protected BufferedReader in;
@@ -43,11 +36,12 @@ public abstract class LocalPlayer implements Player {
     protected OnlinePlayerHandler onlinePlayerHandler;
     
     public LocalPlayer(String name, List<Ship> ships, GameGrid gameGrid, GameView gameView, int port) {
-        this.name = name;
+    	this.name = name;
         this.ships = new ArrayList<Ship>(ships);;
         this.gameGrid = gameGrid;
         this.commandQueue = new ConcurrentLinkedQueue<Command>();
         this.gameView = gameView;
+        
         try {
 			this.socket = new ServerSocket(port);
         } catch (Exception e) {
@@ -59,30 +53,7 @@ public abstract class LocalPlayer implements Player {
         this.LAST_RESPONSE_COORDINATE = new ConcurrentLinkedQueue<ResponseCoordinate>();
         this.LAST_RESPONSE_SETUP = new ConcurrentLinkedQueue<ResponseSetup>();
     }
-
-    public boolean addShip(ShipTemplate shipTemplate, Coordinate coordinate, int timesRotated) {
-        Ship ship = new Ship(shipTemplate, coordinate, timesRotated);
-        ships.add(ship);
-        return true;
-    }
     
-    public static boolean checkListHits(int x, int y, GameGrid gameGrid) {
-        for (ShipCoordinate coord : gameGrid.getListOfCoordsHit()) {
-            if (coord.getX() == x && coord.getY() == y) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public List<Ship> getShips() {
-        return ships;
-    }
-
-    public GameGrid getGameGrid() {
-        return gameGrid;
-    }
-
     public ResponseHit hit(Coordinate coordinate) {
         for (Ship ship : ships) {
             if (ship.hit(coordinate)) {
@@ -122,10 +93,6 @@ public abstract class LocalPlayer implements Player {
 		return null;
 	}
 
-	public String getName() {
-        return name;
-    }
-
     public ResponseSetup setup() {
         gameView.addGameAction(new Setup(this));
 
@@ -140,10 +107,6 @@ public abstract class LocalPlayer implements Player {
 		LAST_RESPONSE_SETUP.add(responseSetup);
 
         return responseSetup;
-    }
-
-    public ConcurrentLinkedQueue<Command> getCommandQueue() {
-    	return commandQueue;
     }
     
     public OnlinePlayerHandler getOnlinePlayerHandler() {

@@ -26,7 +26,9 @@ public abstract class GameView {
 	protected Game game;
 	protected String USERNAME;
 	protected boolean IS_HUMAN = true;
-
+	protected int BOARD_DIMENSION_X = 10;
+	protected int BOARD_DIMENSION_Y = 10;
+	
 	public GameView(String[] args) {
 		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
 		if (args.length < 2) {
@@ -114,6 +116,10 @@ public abstract class GameView {
 		return gameActions;
 	}
 	
+    public Game getGame() {
+    	return game;
+    }
+	
     private static final Random random = new Random();
 
     public static void setupRandomFleet(LocalPlayer player, List<ShipTemplate> shipTemplates) {
@@ -139,6 +145,34 @@ public abstract class GameView {
             }
         }
     }
+    
+	public static List<ShipTemplate> createBasicFleet() {
+        List<ShipTemplate> shipTemplates = new ArrayList<ShipTemplate>();
+
+        // Submarine: 3 ships, length 2
+        for (int i = 0; i < 3; i++) {
+            List<Coordinate> coordinates = createCoordinates(2);
+            shipTemplates.add(new ShipTemplate("Submarine", coordinates));
+        }
+
+        // Destroyer: 2 ships, length 3
+        for (int i = 0; i < 2; i++) {
+            List<Coordinate> coordinates = createCoordinates(3);
+            shipTemplates.add(new ShipTemplate("Destroyer", coordinates));
+        }
+
+        // Battleship: 2 ships, length 4
+        for (int i = 0; i < 2; i++) {
+            List<Coordinate> coordinates = createCoordinates(4);
+            shipTemplates.add(new ShipTemplate("Battleship", coordinates));
+        }
+
+        // Carrier: 1 ship, length 5
+        List<Coordinate> coordinates = createCoordinates(5); 
+        shipTemplates.add(new ShipTemplate("Carrier", coordinates));
+
+        return shipTemplates;
+    }
 
     public static boolean canPlaceShip(Ship ship, List<Ship> existingShips, GameGrid grid) {
         for (ShipCoordinate coord : ship.getShipCoordinates()) {
@@ -157,7 +191,7 @@ public abstract class GameView {
         return true;
     }
     
-    public Game getGame() {
-    	return game;
+    public static GameType createBasicGameType(int dimensionX, int dimensionY) {
+        return new GameType(new Dimension(dimensionX, dimensionY), createBasicFleet());
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import io.github.spl.exceptions.GameViewException;
 import io.github.spl.game.actions.GameAction;
 import io.github.spl.player.AIPlayer;
 import io.github.spl.player.HumanPlayer;
@@ -15,30 +16,37 @@ import io.github.spl.ships.ShipTemplate;
  */
 public abstract class GameView {
 	public GameView(String[] args) {
-
-		if (args != null && args.length == 1){
-			this.game = new Game(createGameType(Integer.parseInt(args[0]), 10, 10), this);
-		} else if (args != null && args.length == 2){
-			this.game = new Game(createGameType(-1, Integer.parseInt(args[0]), Integer.parseInt(args[1])), this);
-		} else if (args != null && args.length == 3){
-			this.game = new Game(createGameType(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2])), this);
-		} else {
-			this.game = new Game(new GameType(new Dimension(10, 10), createBasicFleet()), this);
+		if (args.length < 1) {
+			throw new GameViewException("Please provide the game difficulty (1-3).");
 		}
+		int difficulty = 0;
+		try {
+			difficulty = Integer.parseInt(args[0]);
+		} catch (NumberFormatException e) {
+			throw new GameViewException("Unable to parse the game difficulty level. "
+					+ "Provide it as an integer (1-3).");
+		}
+		if (difficulty < 1 || difficulty > 3) {
+			throw new GameViewException("Invalid game difficulty! Please provide the game difficulty (1-3).");
+		}
+		this.game = new Game(createGameType(difficulty, BOARD_DIMENSION_X, BOARD_DIMENSION_Y), this);
 	}
-
-	public static GameType createGameType(int ships, int dimensionX, int dimensionY) {
-		if (dimensionX > 0 && dimensionY > 0) {
-			if (ships == 0) {
-				return new GameType(new Dimension(dimensionX, dimensionY), createEasyFleet());
-			} else if (ships == 1) {
-				return new GameType(new Dimension(dimensionX, dimensionY), createBasicFleet());
-			} else if (ships == 2) {
-				return new GameType(new Dimension(dimensionX, dimensionY), createDifficultFleet());
-			}
-			return new GameType(new Dimension(dimensionX, dimensionY), createBasicFleet());
+	
+	public static GameType createGameType(int difficulty, int dimensionX, int dimensionY) {
+		GameType gameType = null;
+		switch (difficulty) {
+			case 1:
+				gameType = new GameType(new Dimension(dimensionX, dimensionY), createEasyFleet());
+				break;
+			case 2:
+				gameType = new GameType(new Dimension(dimensionX, dimensionY), createBasicFleet());
+				break;
+			case 3:
+				gameType = new GameType(new Dimension(dimensionX, dimensionY), createDifficultFleet());
+				break;
 		}
-		return new GameType(new Dimension(10, 10), createBasicFleet());
+		
+		return gameType;
 	}
 
 	public static List<ShipTemplate> createEasyFleet() {

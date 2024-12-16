@@ -1,45 +1,32 @@
-package io.github.spl.player; 
+package io.github.spl.player;
 
-import java.util.LinkedList; 
-import java.util.List; 
-import java.util.ArrayList; 
-import java.io.BufferedInputStream; 
-import java.io.BufferedReader; 
-import java.io.InputStream; 
-import java.io.OutputStream; 
-import java.util.Queue; 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Queue;
 
-import io.github.spl.game.GameGrid; 
-import io.github.spl.game.GameView; 
-import io.github.spl.game.actions.RequestCoordinates; 
-import io.github.spl.game.actions.Sinkage; 
-import io.github.spl.player.Player; 
-import io.github.spl.protocol.*; 
-import io.github.spl.protocol.ResponseHit.ResponseHitOption; 
-import io.github.spl.ships.Coordinate; 
-import io.github.spl.ships.*; 
+import io.github.spl.game.GameGrid;
+import io.github.spl.game.GameView;
+import io.github.spl.game.actions.RequestCoordinates;
+import io.github.spl.game.actions.Sinkage;
+import io.github.spl.player.Player;
+import io.github.spl.protocol.*;
+import io.github.spl.protocol.ResponseHit.ResponseHitOption;
+import io.github.spl.ships.Coordinate;
+import io.github.spl.ships.*;
 
-public   class  AIPlayer  extends LocalPlayer {
-	
+public class AIPlayer extends LocalPlayer {
 
     private int[][] probabilityMap;
-
-	
     private int gridWidth;
-
-	
     private int gridHeight;
-
-	
     private List<ShipTemplate> remainingOpponentShips;
-
-	
     private Queue<Coordinate> targetQueue;
-
-	
     private String lastHitDirection;
-
-	
 
     private void initializeProbabilityMap() {
         for (int x = 0; x < gridWidth; x++) {
@@ -49,13 +36,9 @@ public   class  AIPlayer  extends LocalPlayer {
         }
     }
 
-	
-
     public void initializeRemainingOpponentShips(List<ShipTemplate> shipTemplates) {
         remainingOpponentShips.addAll(shipTemplates);
     }
-
-	
 
     public void updateRemainingOpponentShips(Sinkage action) {
         String sunkShipName = action.getShipName();
@@ -67,8 +50,6 @@ public   class  AIPlayer  extends LocalPlayer {
         }
         targetQueue.clear();
     }
-
-	
     
     private void updateProbabilityMap() {
         initializeProbabilityMap(); // Reset Probability Map
@@ -101,8 +82,6 @@ public   class  AIPlayer  extends LocalPlayer {
         }
     }
 
-	
-
     private boolean canPlaceShip(int x, int y, int length, boolean horizontal) {
         for (int i = 0; i < length; i++) {
             int checkX = horizontal ? x : x + i;
@@ -115,8 +94,6 @@ public   class  AIPlayer  extends LocalPlayer {
         }
         return true;
     }
-
-	
 
     public Coordinate getHighestProbabilityCoordinate() {
         int maxProbability = -1;
@@ -137,8 +114,6 @@ public   class  AIPlayer  extends LocalPlayer {
         
         return bestCoordinate;
     }
-
-	
     
     public Coordinate randomCoordToHit() {
         int x = getRandomHit(gameGrid.getDimension().getWidth());
@@ -146,13 +121,9 @@ public   class  AIPlayer  extends LocalPlayer {
         return new Coordinate(x, y);
     }
 
-	
-
     public int getRandomHit(int maxDimension) {
 		return (int)(Math.random() * maxDimension);
 	}
-
-	
 
     public void addAdjacentCoordinates(Coordinate hit, String shipName) {
         int x = hit.getX();
@@ -208,8 +179,6 @@ public   class  AIPlayer  extends LocalPlayer {
         }
     }
 
-	
-
     private Coordinate getNextTargetInDirection(Coordinate current, String direction) {
         int x = current.getX();
         int y = current.getY();
@@ -239,8 +208,6 @@ public   class  AIPlayer  extends LocalPlayer {
         return null;
     }
 
-	
-
     private String reverseDirection(String currentDirection) {
         switch (currentDirection) {
             case "HORIZONTAL":
@@ -255,45 +222,4 @@ public   class  AIPlayer  extends LocalPlayer {
                 return null;
         }
     }
-
-	
-	
-    public AIPlayer(String name, List<Ship> ships, GameGrid gameGrid, GameView gameView) {
-        super(name, ships, gameGrid, gameView);
-
-        this.gridWidth = gameGrid.getDimension().getWidth();
-        this.gridHeight = gameGrid.getDimension().getHeight();
-        this.probabilityMap = new int[gridWidth][gridHeight];
-        this.remainingOpponentShips = new ArrayList<ShipTemplate>();
-        this.targetQueue = new LinkedList<Coordinate>();
-        this.lastHitDirection = null;
-        initializeProbabilityMap();
-    }
-
-	
-	
-    @Override
-    public ResponseCoordinate selectCoordinate() {
-    	
-        gameView.addGameAction(new RequestCoordinates(this));
-        Command command = null;
-        while (!(command instanceof ResponseCoordinate)) {
-            if (!commandQueue.isEmpty()) {
-                command = commandQueue.poll();
-            }
-        }
-    	
-        if (!targetQueue.isEmpty()) {
-            Coordinate nextTarget = targetQueue.poll();
-            
-            return new ResponseCoordinate(gameView.getGame().getStep(), nextTarget.getX(), nextTarget.getY());
-        }
-
-        updateProbabilityMap();
-        Coordinate bestCoordinate = getHighestProbabilityCoordinate();
-        
-        return new ResponseCoordinate(gameView.getGame().getStep(), bestCoordinate.getX(), bestCoordinate.getY());
-    }
-
-
 }

@@ -17,7 +17,6 @@ import io.github.spl.ships.Coordinate;
 import io.github.spl.ships.Ship; 
 import io.github.spl.ships.ShipCoordinate; 
 import io.github.spl.ships.ShipTemplate; 
-
 import io.github.spl.game.actions.GameAction; 
 import io.github.spl.ships.*; 
 import io.github.spl.player.*; 
@@ -43,8 +42,13 @@ public abstract   class  GameView {
 	protected boolean IS_HUMAN = true;
 
 	
+	protected int BOARD_DIMENSION_X = 10;
 
-    public GameView  (String[] args) {
+	
+	protected int BOARD_DIMENSION_Y = 10;
+
+	
+	public GameView  (String[] args) {
 		this.gameActions = new ConcurrentLinkedQueue<GameAction>();
 		if (args.length < 2) {
 			throw new GameViewException("Expected the username as a first argument, "
@@ -63,8 +67,44 @@ public abstract   class  GameView {
 		}
 		args = Arrays.copyOfRange(args, 2, args.length);
 	
-        this.game = new Game(createBasicGameType(), this);
-    }
+		this.game = new Game(createBasicGameType(BOARD_DIMENSION_X, BOARD_DIMENSION_Y), this);
+	
+		if (args.length < 2) {
+			throw new GameViewException("Please provide the game field sizes as two non-negative integers.");
+		}
+		int dimensionX = 0;
+		int dimensionY = 0;
+		try {
+			dimensionX = Integer.parseInt(args[0]);
+			dimensionY = Integer.parseInt(args[1]);
+		} catch (NumberFormatException e) {
+			throw new GameViewException("Unable to parse the game field sizes. "
+					+ "Provide them as non-negative numbers.");
+		}
+		if (dimensionX <= 0 || dimensionY <= 0) {
+			throw new GameViewException("Please provide the game field sizes as two non-negative integers.");
+		}
+		this.BOARD_DIMENSION_X = dimensionX;
+		this.BOARD_DIMENSION_Y = dimensionY;
+		this.game = new Game(createGameType(1, BOARD_DIMENSION_X, BOARD_DIMENSION_Y), this);
+		
+		args = Arrays.copyOfRange(args, 2, args.length);
+	
+		if (args.length < 1) {
+			throw new GameViewException("Please provide the game difficulty (1-3).");
+		}
+		int difficulty = 0;
+		try {
+			difficulty = Integer.parseInt(args[0]);
+		} catch (NumberFormatException e) {
+			throw new GameViewException("Unable to parse the game difficulty level. "
+					+ "Provide it as an integer (1-3).");
+		}
+		if (difficulty < 1 || difficulty > 3) {
+			throw new GameViewException("Invalid game difficulty! Please provide the game difficulty (1-3).");
+		}
+		this.game = new Game(createGameType(difficulty, BOARD_DIMENSION_X, BOARD_DIMENSION_Y), this);
+	}
 
 	
 
@@ -178,6 +218,12 @@ public abstract   class  GameView {
 
 	
 	
+    public Game getGame() {
+    	return game;
+    }
+
+	
+	
     private static final Random random = new Random();
 
 	
@@ -207,49 +253,8 @@ public abstract   class  GameView {
     }
 
 	
-
-    public static boolean canPlaceShip(Ship ship, List<Ship> existingShips, GameGrid grid) {
-        for (ShipCoordinate coord : ship.getShipCoordinates()) {
-            if (coord.getX() < 0 || coord.getX() >= grid.getDimension().getWidth() ||
-                coord.getY() < 0 || coord.getY() >= grid.getDimension().getHeight()) {
-                return false;
-            }
-
-            // Check for overlap with existing ships
-            for (Ship existingShip : existingShips) {
-                if (existingShip.getShipCoordinates().contains(coord)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-	
     
-    public Game getGame() {
-    	return game;
-    }
-
-	
-
-    public static GameType createBasicGameType() {
-        List<Coordinate> coordinateList = new ArrayList<Coordinate>();
-        coordinateList.add(new Coordinate(0, 0));
-
-        ShipTemplate ship1 = new ShipTemplate("basic", coordinateList);
-
-        List<ShipTemplate> shipTemplates = new ArrayList<ShipTemplate>();
-        shipTemplates.add(ship1);
-
-        //GameType standartType = new GameType(new Dimension(10, 10), shipTemplates);
-        GameType standartType = new GameType(new Dimension(10, 10), createBasicFleet());
-        return standartType;
-    }
-
-	
-
-    public static List<ShipTemplate> createBasicFleet() {
+	public static List<ShipTemplate> createBasicFleet() {
         List<ShipTemplate> shipTemplates = new ArrayList<ShipTemplate>();
 
         // Submarine: 3 ships, length 2
@@ -271,13 +276,38 @@ public abstract   class  GameView {
         }
 
         // Carrier: 1 ship, length 5
-        List<Coordinate> coordinates = createCoordinates(5);
+        List<Coordinate> coordinates = createCoordinates(5); 
         shipTemplates.add(new ShipTemplate("Carrier", coordinates));
 
         return shipTemplates;
     }
 
-	 
+	
+
+    public static boolean canPlaceShip(Ship ship, List<Ship> existingShips, GameGrid grid) {
+        for (ShipCoordinate coord : ship.getShipCoordinates()) {
+            if (coord.getX() < 0 || coord.getX() >= grid.getDimension().getWidth() ||
+                coord.getY() < 0 || coord.getY() >= grid.getDimension().getHeight()) {
+                return false;
+            }
+
+            // Check for overlap with existing ships
+            for (Ship existingShip : existingShips) {
+                if (existingShip.getShipCoordinates().contains(coord)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+	
+    
+    public static GameType createBasicGameType(int dimensionX, int dimensionY) {
+        return new GameType(new Dimension(dimensionX, dimensionY), createBasicFleet());
+    }
+
+	
 
     private static List<Coordinate> createCoordinates(int length) {
         List<Coordinate> coordinates = new ArrayList<Coordinate>();
@@ -286,6 +316,103 @@ public abstract   class  GameView {
         }
         return coordinates;
     }
+
+	
+	
+	public static GameType createGameType  (int difficulty, int dimensionX, int dimensionY) {
+		GameType gameType = null;
+		switch (difficulty) {
+			case 1:
+				gameType = new GameType(new Dimension(dimensionX, dimensionY), createEasyFleet());
+				break;
+			case 2:
+				gameType = new GameType(new Dimension(dimensionX, dimensionY), createBasicFleet());
+				break;
+			case 3:
+				gameType = new GameType(new Dimension(dimensionX, dimensionY), createDifficultFleet());
+				break;
+		}
+		
+		return gameType;
+	}
+
+	
+
+	public static List<ShipTemplate> createEasyFleet() {
+		List<ShipTemplate> shipTemplates = new ArrayList<ShipTemplate>();
+
+		// Destroyer: 1 ship, length 2
+		shipTemplates.add(new ShipTemplate("Destroyer", createCoordinates(2)));
+
+
+		// Submarine: 1 ship, length 3
+		shipTemplates.add(new ShipTemplate("Submarine", createCoordinates(3)));
+
+
+		// Cruiser: 1 ship, length 3
+		shipTemplates.add(new ShipTemplate("Cruiser", createCoordinates(3)));
+
+
+		// Battleship: 1 ship, length 4
+		shipTemplates.add(new ShipTemplate("Battleship", createCoordinates(4)));
+
+
+		// Carrier: 1 ship, length 5
+		shipTemplates.add(new ShipTemplate("Carrier", createCoordinates(5)));
+
+		return shipTemplates;
+	}
+
+	
+
+	public static List<ShipTemplate> createDifficultFleet() {
+		List<ShipTemplate> shipTemplates = new ArrayList<ShipTemplate>();
+
+		// Destroyer: 2 ship, length 2
+		for (int i = 0; i < 2; i++) {
+			List<Coordinate> coordinates = createCoordinates(2);
+			shipTemplates.add(new ShipTemplate("Destroyer", coordinates));
+		}
+
+		// Submarine: 2 ship, length 3
+		for (int i = 0; i < 2; i++) {
+			List<Coordinate> coordinates = createCoordinates(3);
+			shipTemplates.add(new ShipTemplate("Submarine", coordinates));
+		}
+
+		// Cruiser: 2 ship, length 3
+		for (int i = 0; i < 2; i++) {
+			List<Coordinate> coordinates = createCoordinates(3, 2);
+			shipTemplates.add(new ShipTemplate("Cruiser", coordinates));
+		}
+
+		// Battleship: 2 ship, length 4
+		for (int i = 0; i < 2; i++) {
+			List<Coordinate> coordinates = createCoordinates(4);
+			shipTemplates.add(new ShipTemplate("Battleship", coordinates));
+		}
+
+		// Carrier: 1 ship, length 5
+		List<Coordinate> coordinates = createCoordinates(5);
+		shipTemplates.add(new ShipTemplate("Carrier", coordinates));
+
+		// BigCarrier: 1 ship, length 5
+		shipTemplates.add(new ShipTemplate("BigCarrier", createCoordinates(5, 2)));
+
+		return shipTemplates;
+	}
+
+	
+
+	private static List<Coordinate> createCoordinates(int length, int height) {
+		List<Coordinate> coordinates = new ArrayList<Coordinate>();
+		for (int i = 0; i < length; i++) {
+			for (int j = 0; j < height; j++) {
+				coordinates.add(new Coordinate(j, i));
+			}
+		}
+		return coordinates;
+	}
 
 
 }

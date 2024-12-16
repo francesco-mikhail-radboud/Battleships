@@ -14,25 +14,21 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import io.github.spl.protocol.ResponseHit.ResponseHitOption; 
 import io.github.spl.game.actions.*; 
 
-public abstract  class  LocalPlayer  implements Player {
+public abstract   class  LocalPlayer  implements Player {
 	
 
     protected String name;
 
 	
-
     protected List<Ship> ships;
 
 	
-
     protected GameGrid gameGrid;
 
 	
-
     protected ConcurrentLinkedQueue<Command> commandQueue;
 
 	
-    
     protected GameView gameView;
 
 	
@@ -78,6 +74,24 @@ public abstract  class  LocalPlayer  implements Player {
 
 	
 
+	public ResponseCoordinate selectCoordinate() {
+		return null;
+	}
+
+	
+
+	public String getName() {
+        return name;
+    }
+
+	
+
+    public ConcurrentLinkedQueue<Command> getCommandQueue() {
+    	return commandQueue;
+    }
+
+	
+
     public ResponseHit hit(Coordinate coordinate) {
         for (Ship ship : ships) {
             if (ship.hit(coordinate)) {
@@ -106,18 +120,6 @@ public abstract  class  LocalPlayer  implements Player {
 
 	
 
-	public ResponseCoordinate selectCoordinate() {
-		return null;
-	}
-
-	
-
-	public String getName() {
-        return name;
-    }
-
-	
-
     public ResponseSetup setup() {
         gameView.addGameAction(new Setup(this));
 
@@ -129,12 +131,6 @@ public abstract  class  LocalPlayer  implements Player {
 		}
 
         return (ResponseSetup) command;
-    }
-
-	
-
-    public ConcurrentLinkedQueue<Command> getCommandQueue() {
-    	return commandQueue;
     }
 
 
