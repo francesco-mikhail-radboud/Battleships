@@ -17,16 +17,17 @@ import io.github.spl.ships.Coordinate;
 import io.github.spl.ships.Ship; 
 import io.github.spl.ships.ShipCoordinate; 
 import io.github.spl.ships.ShipTemplate; 
+
+import java.io.IOException; 
+import java.net.Socket; 
 import io.github.spl.game.actions.GameAction; 
 import io.github.spl.ships.*; 
 import io.github.spl.player.*; 
+import io.github.spl.player.LocalPlayer.OnlinePlayerHandler; 
 import io.github.spl.game.*; 
 import io.github.spl.player.AIPlayer; 
 import io.github.spl.player.HumanPlayer; 
 
-/**
- * TODO description
- */
 public abstract   class  GameView {
 	
 	
@@ -66,6 +67,26 @@ public abstract   class  GameView {
 			this.IS_HUMAN = false;
 		}
 		args = Arrays.copyOfRange(args, 2, args.length);
+	
+		if (args.length < 3) {
+			throw new GameViewException("You should provide: \n"
+					+ "- your port number, \n"
+					+ "- opponent's host, "
+					+ "- and opponent's port numeber \n"
+					+ "as last 3 arguments.");
+		}
+		try {
+			myPort = Integer.parseInt(args[0]);
+		} catch (NumberFormatException e) {
+			throw new GameViewException("Unable to parse the user's port number!");
+		}
+		opponentHost = args[1];
+		try {
+			opponentPort = Integer.parseInt(args[2]);
+		} catch (NumberFormatException e) {
+			throw new GameViewException("Unable to parse the opponent's port number!");
+		}
+		args = Arrays.copyOfRange(args, 3, args.length);
 	
 		this.game = new Game(createBasicGameType(BOARD_DIMENSION_X, BOARD_DIMENSION_Y), this);
 	
@@ -128,20 +149,63 @@ public abstract   class  GameView {
 	}
 
 	
+	
     public void run() {
     	LocalPlayer player1 = null;
     	if (IS_HUMAN) {
-    		player1 = new HumanPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
+    		player1 = new HumanPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this, myPort);
     	} else {
-    		player1 = new AIPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
+    		player1 = new AIPlayer(USERNAME, new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this, myPort);
     	}
+    	
+        Socket socket = null;
+        boolean isPlayerOne = false;
+        while (true) {
+        	System.out.println("Waiting for the opponent to join...");
+        	try {
+                socket = new Socket(opponentHost, opponentPort);
+                break;
+            } catch (IOException e) {
+            	isPlayerOne = true;
+            	try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
 
-        AIPlayer player2 = new AIPlayer("AI", new ArrayList<Ship>(), new GameGrid(game.getGameType().getDimension()), this);
-
-        game.setPlayer1(player1);
-        game.setPlayer2(player2);
+        OnlinePlayer player2 = new OnlinePlayer(socket, this);
+        
+        Thread onlineThread = null;
+        
+        try {
+	        LocalPlayer.OnlinePlayerHandler onlinePlayerHandler = 
+	        		new LocalPlayer.OnlinePlayerHandler(player1, player1.getServerSocket().accept());
+	        player1.setOnlinePlayerHandler(onlinePlayerHandler);
+	        
+	        onlineThread = new Thread(onlinePlayerHandler);
+	        
+	        onlineThread.start();
+        } catch (IOException e) {
+        	throw new RuntimeException(e);
+        }
+		
+        if (isPlayerOne) {
+        	game.setPlayer1(player1);
+        	game.setPlayer2(player2);
+        } else {
+        	game.setPlayer1(player2);
+        	game.setPlayer2(player1);
+        }
         
         run__wrappee__Base();
+        
+        try {
+        	socket.close();
+        } catch (IOException e) {
+        	throw new RuntimeException(e);
+        }
 	}
 
 	
@@ -306,6 +370,17 @@ public abstract   class  GameView {
     public static GameType createBasicGameType(int dimensionX, int dimensionY) {
         return new GameType(new Dimension(dimensionX, dimensionY), createBasicFleet());
     }
+
+	
+	
+	protected int myPort;
+
+	
+	
+	protected String opponentHost;
+
+	
+	protected int opponentPort;
 
 	
 

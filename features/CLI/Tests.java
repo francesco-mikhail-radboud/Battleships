@@ -11,7 +11,8 @@ import io.github.spl.ships.ShipCoordinate;
 public class Tests {
 	@Test
 	public void testCLIGameView_checkListHits() {
-		CLIGameView cliGameView = new CLIGameView(new String[]);
+		String[] str = new String[] {"User", "human", "10", "10", "1"};
+		CLIGameView cliGameView = new CLIGameView(str);
 		
 		GameGrid gameGrid = new GameGrid(new Dimension(10, 10));
 		

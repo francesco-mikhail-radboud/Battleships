@@ -10,9 +10,6 @@ import io.github.spl.ships.*;
 import io.github.spl.protocol.*;
 import java.util.ArrayList;
 
-/**
- * TODO description
- */
 public class CLIGameView extends GameView {
 	
 	private final Scanner scanner;
@@ -98,17 +95,16 @@ public class CLIGameView extends GameView {
 	
 	protected void processGameTick(GameTick action) {
 		if (action.getPlayer1() instanceof HumanPlayer) {
-			HumanPlayer humanPlayer = (HumanPlayer) action.getPlayer1();
-			CLIDisplay.displayYourGrid(humanPlayer.getShips(), humanPlayer.getGameGrid().getDimension());
-			CLIDisplay.displayGridHits(humanPlayer.getGameGrid().getListOfCoordsHit(), humanPlayer.getGameGrid().getDimension());	
-		} 
+			LocalPlayer localPlayer = (LocalPlayer) action.getPlayer1();
+			CLIDisplay.displayYourGrid(localPlayer.getShips(), localPlayer.getGameGrid().getDimension());
+			CLIDisplay.displayGridHits(localPlayer.getGameGrid().getListOfCoordsHit(), localPlayer.getGameGrid().getDimension());	
+		}
 	}
 
 	protected void processSetup(Setup action) {
 		if (action.getPlayer() instanceof HumanPlayer) {
 			HumanPlayer humanPlayer = (HumanPlayer) action.getPlayer();
-			//setupFleetFromUserInput(humanPlayer, game.getGameType().getTemplates());
-			setupRandomFleet(humanPlayer, game.getGameType().getTemplates());
+			setupFleetFromUserInput(humanPlayer, game.getGameType().getTemplates());
 
 			humanPlayer.getCommandQueue().add(new ResponseSetup(game.getStep(), true));
 		} else if (action.getPlayer() instanceof AIPlayer) {

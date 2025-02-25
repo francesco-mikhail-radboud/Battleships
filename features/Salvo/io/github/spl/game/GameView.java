@@ -10,9 +10,6 @@ import io.github.spl.player.HumanPlayer;
 import io.github.spl.ships.Coordinate;
 import io.github.spl.ships.ShipTemplate;
 
-/**
- * TODO description
- */
 public abstract class GameView {
     public GameView(String[] args) {
         this.game = new Game(createBasicGameType(BOARD_DIMENSION_X, BOARD_DIMENSION_Y), this);

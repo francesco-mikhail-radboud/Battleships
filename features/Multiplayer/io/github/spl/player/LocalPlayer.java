@@ -165,8 +165,7 @@ public abstract class LocalPlayer implements Player {
                 		processAckName((AckName) command);
                 	} else if (command instanceof AckSetup) {
                 		processAckSetup((AckSetup) command);
-                	}
-                	//System.out.println(inputLine);	
+                	}	
                 }
                 localPlayer.setOnlinePlayerHandler(null);
                 // Close the input and output streams and the client socket

@@ -33,18 +33,8 @@ public class AIPlayer extends LocalPlayer {
     }
 	
     @Override
-    public ResponseCoordinate selectCoordinate() {
-    	
+    public ResponseCoordinate selectCoordinate() {	
     	gameView.addGameAction(new RequestCoordinates(this));
-        Command command = null;
-        while (!(command instanceof ResponseCoordinate)) {
-            if (!commandQueue.isEmpty()) {
-                command = commandQueue.poll();
-            }
-        }
-    	
-    	gameView.addGameAction(new RequestCoordinates(this));
-		
 		Command command = null;
 		while (!(command instanceof ResponseCoordinate)) {
 			if (!commandQueue.isEmpty()) {

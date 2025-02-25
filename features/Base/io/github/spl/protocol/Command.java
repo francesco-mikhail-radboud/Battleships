@@ -1,8 +1,5 @@
 package io.github.spl.protocol;
 
-/**
- * TODO description
- */
 public abstract class Command {
 	protected int id;
 	

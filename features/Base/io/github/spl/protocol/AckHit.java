@@ -1,8 +1,5 @@
 package io.github.spl.protocol;
 
-/**
- * TODO description
- */
 public class AckHit extends Command {
 	
 	public AckHit(int id) {

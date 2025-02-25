@@ -258,8 +258,8 @@ public   class  AIPlayer  extends LocalPlayer {
 
 	
 	
-    public AIPlayer(String name, List<Ship> ships, GameGrid gameGrid, GameView gameView) {
-        super(name, ships, gameGrid, gameView);
+    public AIPlayer(String name, List<Ship> ships, GameGrid gameGrid, GameView gameView, int port) {
+        super(name, ships, gameGrid, gameView, port);
 
         this.gridWidth = gameGrid.getDimension().getWidth();
         this.gridHeight = gameGrid.getDimension().getHeight();
@@ -273,26 +273,29 @@ public   class  AIPlayer  extends LocalPlayer {
 	
 	
     @Override
-    public ResponseCoordinate selectCoordinate() {
-    	
-        gameView.addGameAction(new RequestCoordinates(this));
-        Command command = null;
-        while (!(command instanceof ResponseCoordinate)) {
-            if (!commandQueue.isEmpty()) {
-                command = commandQueue.poll();
-            }
-        }
+    public ResponseCoordinate selectCoordinate() {	
+    	gameView.addGameAction(new RequestCoordinates(this));
+		Command command = null;
+		while (!(command instanceof ResponseCoordinate)) {
+			if (!commandQueue.isEmpty()) {
+				command = commandQueue.poll();
+			}
+		}
     	
         if (!targetQueue.isEmpty()) {
             Coordinate nextTarget = targetQueue.poll();
             
-            return new ResponseCoordinate(gameView.getGame().getStep(), nextTarget.getX(), nextTarget.getY());
+            ResponseCoordinate responseCoordinate = new ResponseCoordinate(gameView.getGame().getStep(), nextTarget.getX(), nextTarget.getY());
+    		LAST_RESPONSE_COORDINATE.add(responseCoordinate);
+            return responseCoordinate;
         }
 
         updateProbabilityMap();
         Coordinate bestCoordinate = getHighestProbabilityCoordinate();
         
-        return new ResponseCoordinate(gameView.getGame().getStep(), bestCoordinate.getX(), bestCoordinate.getY());
+        ResponseCoordinate responseCoordinate = new ResponseCoordinate(gameView.getGame().getStep(), bestCoordinate.getX(), bestCoordinate.getY());
+        LAST_RESPONSE_COORDINATE.add(responseCoordinate);
+        return responseCoordinate;
     }
 
 

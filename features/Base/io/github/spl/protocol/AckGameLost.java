@@ -1,8 +1,5 @@
 package io.github.spl.protocol;
 
-/**
- * TODO description
- */
 public class AckGameLost extends Command {
 	
 	public AckGameLost(int id) {

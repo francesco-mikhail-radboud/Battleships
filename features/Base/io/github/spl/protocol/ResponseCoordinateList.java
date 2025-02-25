@@ -4,9 +4,6 @@ import io.github.spl.ships.Coordinate;
 
 import java.util.List;
 
-/**
- * TODO description
- */
 public class ResponseCoordinateList extends Command {
 
     private final List<Coordinate> coordinateList;

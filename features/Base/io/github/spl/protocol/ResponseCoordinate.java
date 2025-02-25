@@ -2,9 +2,6 @@ package io.github.spl.protocol;
 
 import io.github.spl.ships.Coordinate;
 
-/**
- * TODO description
- */
 public class ResponseCoordinate extends Command {
 	
 	private final Coordinate coordinate;

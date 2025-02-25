@@ -102,8 +102,6 @@ public abstract  class  GameGridPanel  extends JPanel {
 
 	
 	
-
-	
 	public void setEnabled(boolean isEnabled) {
 		for (int row = 0; row < gridHeight; row++) {
             for (int col = 0; col < gridWidth; col++) {

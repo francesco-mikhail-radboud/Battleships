@@ -10,9 +10,6 @@ import io.github.spl.player.*;
 import io.github.spl.game.*;
 import java.util.Random;
 
-/**
- * TODO description
- */
 public abstract class GameView {
     public void run() {
     	LocalPlayer player1 = null;

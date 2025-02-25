@@ -9,9 +9,6 @@ import io.github.spl.protocol.ResponseHit.ResponseHitOption;
 import io.github.spl.game.actions.*;
 import io.github.spl.ships.*;
 
-/**
- * TODO description
- */
 public class Game {
     public void play() {
 
@@ -83,23 +80,6 @@ public class Game {
                 }
             }
 
-            // perform hit from player 1 to player 2
-            /*ResponseCoordinate responseCoordinate = player1.selectCoordinate();
-            ResponseHit responseHit = player2.hit(responseCoordinate.getCoordinate());
-
-            switch (responseHit.getHitOption()) {
-                case ResponseHitOption.HIT:
-                	gameView.addGameAction(new Damage(player1, player2, responseHit.getShipName(), responseCoordinate.getCoordinate()));
-                    break;
-                case ResponseHitOption.MISS:
-                	gameView.addGameAction(new Miss(player1, player2, responseCoordinate.getCoordinate()));
-                    break;
-                case ResponseHitOption.SINK:
-                	gameView.addGameAction(new Sinkage(player1, player2, responseCoordinate.getCoordinate(), responseHit.getShipName()));
-                    break;
-            }
-             */
-            
             // Check if player 2 lost the game
             responseLost = player2.isGameLost();
             if (responseLost == null) {

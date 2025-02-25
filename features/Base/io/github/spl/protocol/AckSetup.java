@@ -1,8 +1,5 @@
 package io.github.spl.protocol;
 
-/**
- * TODO description
- */
 public class AckSetup extends Command {
 	
 	public AckSetup(int id) {

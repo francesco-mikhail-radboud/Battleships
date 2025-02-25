@@ -386,9 +386,7 @@ public  class  GUIGameView  extends GameView {
                 } catch (InvocationTargetException e) {
                     throw new RuntimeException(e);
                 }
-                 
-				// setupRandomFleet(humanPlayer, game.getGameType().getTemplates());
-				// humanPlayer.getCommandQueue().add(new ResponseSetup(game.getStep(), true));
+				
 			} else if (action.getPlayer() instanceof AIPlayer) {
 				AIPlayer aiPlayer = (AIPlayer) action.getPlayer();
 				setupRandomFleet(aiPlayer, game.getGameType().getTemplates());

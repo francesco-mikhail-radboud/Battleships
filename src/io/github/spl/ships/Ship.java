@@ -5,9 +5,6 @@ import java.util.List;
 
 import io.github.spl.game.GameGrid; 
 
-/**
- * TODO description
- */
 public   class   Ship {
 	
 

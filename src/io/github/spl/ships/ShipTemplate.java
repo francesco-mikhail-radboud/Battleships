@@ -2,9 +2,6 @@ package io.github.spl.ships;
 
 import java.util.List; 
 
-/**
- * TODO description
- */
 public  class  ShipTemplate {
 	
 	private final String name;

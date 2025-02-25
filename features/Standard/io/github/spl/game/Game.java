@@ -5,9 +5,6 @@ import io.github.spl.protocol.*;
 import io.github.spl.protocol.ResponseHit.ResponseHitOption;
 import io.github.spl.game.actions.*;
 
-/**
- * TODO description
- */
 public class Game {
     public void play() {
 
@@ -31,7 +28,6 @@ public class Game {
         	gameView.addGameAction(new GameTick(player1, player2));
         	
         	// Check if player 1 didn't lose the game
-            System.out.println("Player1 is game lost:");
             ResponseGameLost responseLost = player1.isGameLost();
             if (responseLost == null) {
             	gameView.addGameAction(new ConnectivityError(player1));
@@ -42,13 +38,11 @@ public class Game {
                 break;
             }
             // perform hit from player 1 to player 2
-            System.out.println("Player1 select coordinate");
             ResponseCoordinate responseCoordinate = player1.selectCoordinate();
             if (responseCoordinate == null) {
             	gameView.addGameAction(new ConnectivityError(player1));
             	break;
             }
-            System.out.println("Player2 hit");
             ResponseHit responseHit = player2.hit(responseCoordinate.getCoordinate());
             if (responseHit == null) {
             	gameView.addGameAction(new ConnectivityError(player2));
@@ -67,7 +61,6 @@ public class Game {
             }
             
             // Check if player 2 lost the game
-            System.out.println("Player2 is game lost");
             responseLost = player2.isGameLost();
             if (responseLost == null) {
             	gameView.addGameAction(new ConnectivityError(player2));
@@ -79,7 +72,6 @@ public class Game {
             }
 
             // swap player 1 and player 2
-            System.out.println("Swap");
             Player tmp = player1;
             player1 = player2;
             player2 = tmp;

@@ -7,9 +7,6 @@ import io.github.spl.ships.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO description
- */
 public class ProtocolParser {
 	public static Command parse(String command) {
 		if (command == null) {

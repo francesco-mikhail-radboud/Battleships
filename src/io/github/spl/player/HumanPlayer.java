@@ -22,8 +22,8 @@ import io.github.spl.game.actions.RequestCoordinates;
 public  class  HumanPlayer  extends LocalPlayer {
 	
 
-    public HumanPlayer(String name, List<Ship> ships, GameGrid gameGrid, GameView gameView) {
-        super(name, ships, gameGrid, gameView);
+    public HumanPlayer(String name, List<Ship> ships, GameGrid gameGrid, GameView gameView, int port) {
+        super(name, ships, gameGrid, gameView, port);
     }
 
 	
@@ -38,8 +38,11 @@ public  class  HumanPlayer  extends LocalPlayer {
 				command = commandQueue.poll();
 			}
 		}
+		
+		ResponseCoordinate responseCoordinate = (ResponseCoordinate) command;
+		LAST_RESPONSE_COORDINATE.add(responseCoordinate);
 
-		return (ResponseCoordinate) command;
+		return responseCoordinate;
     }
 
 

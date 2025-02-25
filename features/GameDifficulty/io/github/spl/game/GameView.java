@@ -17,9 +17,6 @@ import io.github.spl.ships.Ship;
 import io.github.spl.ships.ShipCoordinate;
 import io.github.spl.ships.ShipTemplate;
 
-/**
- * TODO description
- */
 public abstract class GameView {	
 	public static GameType createGameType(int ships, int dimensionX, int dimensionY) {
 		GameType gameType = new GameType(new Dimension(dimensionX, dimensionY), createBasicFleet());

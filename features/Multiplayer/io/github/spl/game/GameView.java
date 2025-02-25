@@ -15,9 +15,6 @@ import io.github.spl.exceptions.GameViewException;
 import io.github.spl.game.*;
 import java.util.Random;
 
-/**
- * TODO description
- */
 public abstract class GameView {
 	
 	protected int myPort;

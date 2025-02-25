@@ -13,9 +13,6 @@ import io.github.spl.game.actions.*;
 import io.github.spl.ships.*;
 import io.github.spl.player.*;
 
-/**
- * TODO description
- */
 public abstract class GameView {
 	public GameView(String[] args) {
 		if (args.length < 2) {

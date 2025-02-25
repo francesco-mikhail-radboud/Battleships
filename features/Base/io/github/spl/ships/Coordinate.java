@@ -1,8 +1,5 @@
 package io.github.spl.ships;
 
-/**
- * TODO description
- */
 public class Coordinate {
 	private final int x; //row
 	private final int y; //column
