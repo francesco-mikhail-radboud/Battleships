@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configuration>
 	<feature automatic="selected" name="Battleships"/>
-	<feature manual="selected" name="Base"/>
+	<feature automatic="selected" manual="selected" name="Base"/>
 	<feature automatic="selected" name="UI"/>
-	<feature name="CLI"/>
-	<feature name="ColoredInterface"/>
-	<feature name="GUI"/>
-	<feature name="Pictures"/>
+	<feature automatic="unselected" name="CLI"/>
+	<feature manual="selected" name="GUI"/>
 	<feature automatic="selected" name="GameMode"/>
-	<feature name="SinglePlayer"/>
-	<feature name="Multiplayer"/>
+	<feature automatic="unselected" name="SinglePlayer"/>
+	<feature manual="selected" name="Multiplayer"/>
 	<feature automatic="selected" name="GameType"/>
-	<feature name="Standard"/>
-	<feature name="Salvo"/>
-	<feature name="GameDifficulty"/>
-	<feature name="GridSize"/>
-	<feature name="Ships"/>
+	<feature manual="selected" name="Standard"/>
+	<feature automatic="unselected" name="Salvo"/>
+	<feature automatic="selected" manual="selected" name="GameDifficulty"/>
+	<feature manual="selected" name="GridSize"/>
+	<feature manual="selected" name="Ships"/>
 </configuration>

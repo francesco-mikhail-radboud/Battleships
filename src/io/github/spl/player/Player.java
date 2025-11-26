@@ -3,6 +3,7 @@ package io.github.spl.player;
 import java.awt.image.BufferedImage; 
 import java.io.BufferedReader; 
 import java.io.BufferedWriter; 
+import java.io.IOException; 
 import java.io.InputStream; 
 import java.io.InputStreamReader; 
 import java.io.OutputStream; 
@@ -11,54 +12,28 @@ import java.util.List;
 
 import io.github.spl.game.GameGrid; 
 import io.github.spl.game.GameView; 
-import io.github.spl.protocol.Command; 
-import io.github.spl.protocol.ProtocolParser; 
-import io.github.spl.protocol.RequestHit; 
+import io.github.spl.protocol.*; 
 import io.github.spl.ships.*; 
 
 /**
  * TODO description
  */
-public  class  Player {
+
+public  interface  Player {
 	
-	private GameGrid gameGrid;
+	ResponseHit hit(Coordinate coordinate);
 
 	
-	private List<Ship> ships;
+    ResponseGameLost isGameLost();
 
 	
-	private GameView gameView;
+	ResponseCoordinate selectCoordinate();
 
 	
-	
-	private BufferedReader inputReader;
+	String getName();
 
 	
-	private BufferedWriter outputWriter;
-
-	
-	
-	public Player(GameGrid gameGrid, List<Ship> ships, GameView gameView) {
-		this.gameGrid = gameGrid;
-		this.ships = new ArrayList<Ship>(ships);
-		this.gameView = gameView;
-	}
-
-	
-	
-	public void hit(Player other) {
-		int x = 0;
-		int y = 0;
-		outputWriter.write(new RequestHit(x, y));
-		outputWriter.flush();
-	}
-
-	
-	
-	public Command read() {
-		Command command = ProtocolParser.parse(inputReader.readLine());
-		return command;
-	}
+	ResponseSetup setup();
 
 
 }

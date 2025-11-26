@@ -1,76 +1,55 @@
 package io.github.spl.player;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
+import java.util.ArrayList;
 
 import io.github.spl.game.GameGrid;
 import io.github.spl.game.GameView;
-import io.github.spl.protocol.Command;
-import io.github.spl.protocol.ProtocolParser;
-import io.github.spl.protocol.RequestHit;
-import io.github.spl.ships.*;
+import io.github.spl.ships.Coordinate;
+import io.github.spl.ships.Ship;
+import io.github.spl.ships.ShipCoordinate;
+import io.github.spl.ships.ShipTemplate;
+import io.github.spl.protocol.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import io.github.spl.protocol.ResponseHit.ResponseHitOption;
+import io.github.spl.game.actions.*;
 
-/**
- * TODO description
- */
-public class AIPlayer implements Player{
-	private GameGrid gameGrid;
-	private List<Ship> ships;
-	private GameView gameView;
-	
-	private Scanner scanner = new Scanner(System.in);
-	
-	private BufferedReader inputReader;
-	private BufferedWriter outputWriter;
-	
-	public LocalPlayer(GameGrid gameGrid, List<Ship> ships, GameView gameView) {
-		this.gameGrid = gameGrid;
-		this.ships = new ArrayList<Ship>(ships);
-		this.gameView = gameView;
-	}
-	
-	
-	public void hit(Player other) {
-		Coordinate xy;
-		do {
-			xy = coordToHit();
-		} while (checkListHits(xy.getX(), xy.getY()))
-		
-		outputWriter.write(new RequestHit(xy.getX(), xy.getY()));
-		outputWriter.flush();
-	}
-	
-	public Command read() {
-		Command command = ProtocolParser.parse(inputReader.readLine());
-		return command;
-	}
-	
-	
-	public boolean checkListHits(int x, int y) {
-		for (ShipCoordinate coord : gameGrid.getListOfCoordsHit()) {
-			if (coord.getX() == x && coord.getY() == y) {
-				return false;
+public abstract class LocalPlayer implements Player {
+
+    public ResponseHit hit(Coordinate coordinate) {
+        for (Ship ship : ships) {
+            if (ship.hit(coordinate)) {
+                if (ship.isSunk()) {
+                    return new ResponseHit(gameView.getGame().getStep(), ResponseHitOption.SINK, ship.getName());
+                } else {
+                    return new ResponseHit(gameView.getGame().getStep(), ResponseHitOption.HIT, ship.getName());
+                }
+            }
+        }
+
+        return new ResponseHit(gameView.getGame().getStep(), ResponseHitOption.MISS, null);
+    }
+
+    public ResponseGameLost isGameLost() {
+        for (Ship ship : ships) {
+            if (!ship.isSunk()) {
+                return new ResponseGameLost(gameView.getGame().getStep(), false);
+            }
+        }
+
+        return new ResponseGameLost(gameView.getGame().getStep(), true);
+    }
+
+    public ResponseSetup setup() {
+        gameView.addGameAction(new Setup(this));
+
+        Command command = null;
+		while (!(command instanceof ResponseSetup)) {
+			if (!commandQueue.isEmpty()) {
+				command = commandQueue.poll();
 			}
 		}
-		return true;
-	}
-	
-	public Coordinate coordToHit() {
-		System.out.println("Select the coordinate to hit (x y):");
-        int x = scanner.nextInt();
-        int y = scanner.nextInt();
-        return new Coordinate(x, y);
-	}
-	
-	
-	
-	
+
+        return (ResponseSetup) command;
+    }
 }

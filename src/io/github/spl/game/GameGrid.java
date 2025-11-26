@@ -1,10 +1,13 @@
 package io.github.spl.game; 
 
+import io.github.spl.ships.*; 
+import java.util.List; 
+import java.util.ArrayList; 
+
 /**
  * TODO description
  */
 public  class  GameGrid {
-	
 	
 	private final Dimension dimension;
 
@@ -15,19 +18,25 @@ public  class  GameGrid {
 	
 	public GameGrid(Dimension dimension) {
 		this.dimension = dimension;
-		listOfCoordsHit = new ArrayList<ShipCoordinate>();
+		this.listOfCoordsHit = new ArrayList<ShipCoordinate>();
 	}
 
 	
 	
-	public getDimension(){
+	public Dimension getDimension(){
 		return dimension;
 	}
 
 	
 	
-	public getListOfCoordsHit(){
+	public List<ShipCoordinate> getListOfCoordsHit(){
 		return listOfCoordsHit;
+	}
+
+	
+	
+	public void add(ShipCoordinate coordinate) {
+		listOfCoordsHit.add(coordinate);
 	}
 
 
